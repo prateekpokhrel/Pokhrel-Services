@@ -1,0 +1,442 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ✅ Required for Tailwind + Vite stability */
+@layer base {
+
+/* ─── DARK MODE (default) ─────────────────────────── */
+:root {
+  --bg:      #080a0f;
+  --bg2:     #0d1117;
+  --bg3:     #111720;
+  --surf:    rgba(255,255,255,0.032);
+  --surf2:   rgba(255,255,255,0.055);
+  --bdr:     rgba(255,255,255,0.07);
+  --bdr2:    rgba(255,255,255,0.12);
+  --p:       #5b8dee;
+  --pdim:    rgba(91,141,238,0.1);
+  --gold:    #c9a84c;
+  --green:   #3ddc84;
+  --t1:      #f0f2f5;
+  --t2:      #8b95a6;
+  --t3:      #505869;
+  --sw:      220px;
+  --swc:     60px;
+  --ease:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Semantic aliases (used in About section) */
+  --txt:        var(--t1);
+  --txt-muted:  var(--t2);
+
+  /* Theme toggle meta */
+  --theme-icon-sun:   1;
+  --theme-icon-moon:  0;
+  --scanline-opacity: 0.022;
+}
+
+/* ─── LIGHT MODE ──────────────────────────────────── */
+:root.light,
+html.light {
+  /* Warm ivory-cream base — not cold grey */
+  --bg:      #faf7f2;
+  --bg2:     #ffffff;
+  --bg3:     #f0ebe2;
+
+  /* Surfaces with a warm amber tint */
+  --surf:    rgba(180,140,80,0.06);
+  --surf2:   rgba(180,140,80,0.11);
+
+  /* Borders — warm, visible but soft */
+  --bdr:     rgba(120,90,40,0.13);
+  --bdr2:    rgba(120,90,40,0.26);
+
+  /* Primary — deep indigo-blue, punchy */
+  --p:       #2a52c9;
+  --pdim:    rgba(42,82,201,0.12);
+
+  /* Accent colors — vivid in light context */
+  --gold:    #b8820a;
+  --green:   #0f9e58;
+
+  /* Typography — rich deep ink, not flat black */
+  --t1:      #12100e;
+  --t2:      #5a4e3c;
+  --t3:      #a8997f;
+
+  --txt:        var(--t1);
+  --txt-muted:  var(--t2);
+
+  --scanline-opacity: 0.008;
+}
+
+}
+
+
+/* ─── Reset ───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* ─── Root layout ─────────────────────────────────── */
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--t1);
+  line-height: 1.6;
+  /* Smooth theme transitions */
+  transition:
+    background 0.35s var(--ease),
+    color 0.35s var(--ease);
+}
+
+
+/* ─── About section ───────────────────────────────── */
+.skillGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.skillBox {
+  border: 1px solid var(--bdr);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgba(127,127,127,0.04);
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.skillBox strong {
+  color: var(--txt);
+  font-weight: 500;
+}
+
+.skillBox span {
+  font-size: 12px;
+  color: var(--txt-muted);
+}
+
+.chip {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bdr);
+  font-size: 13px;
+  background: rgba(127,127,127,0.04);
+  color: var(--txt-muted);
+  display: inline-flex;
+  align-items: center;
+  transition: border-color 0.3s, background 0.3s, color 0.3s;
+}
+
+.chip-active {
+  border-color: #6ea8ff;
+  color: var(--txt);
+  background: rgba(110,168,255,0.08);
+}
+
+html.light .chip-active {
+  border-color: #2a52c9;
+  color: var(--t1);
+  background: rgba(42,82,201,0.10);
+}
+
+
+/* ─── Scrollbar ───────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bdr2);
+  border-radius: 2px;
+}
+
+
+/* ─── Background texture (scanlines) ─────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,var(--scanline-opacity)) 2px,
+      rgba(0,0,0,var(--scanline-opacity)) 4px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* ─── Layout ──────────────────────────────────────── */
+.page-wrapper {
+  padding: 52px 52px 80px;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  animation: pageIn 0.5s var(--ease) both;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+
+/* ─── Section header ──────────────────────────────── */
+.sec-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--p);
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+  transition: color 0.3s;
+}
+
+.sec-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(26px, 3vw, 36px);
+  font-weight: 800;
+  color: var(--t1);
+  letter-spacing: -0.7px;
+  line-height: 1.1;
+  transition: color 0.3s;
+}
+
+.sec-header {
+  margin-bottom: 40px;
+}
+
+
+/* ─── Card ────────────────────────────────────────── */
+.card {
+  background: var(--surf);
+  border: 1px solid var(--bdr);
+  border-radius: 12px;
+  padding: 26px;
+  transition:
+    all 0.25s,
+    background 0.35s var(--ease),
+    border-color 0.35s var(--ease);
+}
+
+.card:hover {
+  border-color: var(--bdr2);
+  box-shadow: 0 0 40px rgba(91,141,238,0.15);
+  transform: translateY(-3px);
+}
+
+html.light .card:hover {
+  box-shadow: 0 0 40px rgba(42,82,201,0.14), 0 4px 24px rgba(180,140,80,0.10);
+}
+
+.card-flat {
+  background: var(--surf);
+  border: 1px solid var(--bdr);
+  border-radius: 12px;
+  padding: 26px;
+  transition:
+    background 0.35s var(--ease),
+    border-color 0.35s var(--ease);
+}
+
+
+/* ─── Divider ─────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--bdr);
+  margin: 52px 0;
+  transition: background 0.35s;
+}
+
+
+/* ─── Buttons ─────────────────────────────────────── */
+.btn {
+  padding: 10px 24px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-fill {
+  background: var(--p);
+  color: white;
+}
+
+.btn-fill:hover {
+  background: #6e9df0;
+}
+
+html.light .btn-fill:hover {
+  background: #1f3ea8;
+}
+
+
+/* ─── Reveal Animation ────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: all 0.6s var(--ease);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ─── Form ────────────────────────────────────────── */
+.f-input {
+  width: 100%;
+  padding: 11px 13px;
+  background: var(--bg2);
+  border: 1px solid var(--bdr);
+  border-radius: 7px;
+  color: var(--t1);
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+}
+
+.f-input:focus {
+  border-color: var(--p);
+  outline: none;
+}
+
+.f-input::placeholder {
+  color: var(--t3);
+}
+
+
+/* ─── Theme Toggle Button ─────────────────────────── */
+/*
+  Drop a button with class "theme-toggle" anywhere in your HTML.
+  It flips the "light" class on <html> and persists to localStorage.
+
+  Example markup:
+    <button class="theme-toggle" aria-label="Toggle theme"></button>
+
+  Wire up via JS (add to your main.js / App.tsx):
+  ─────────────────────────────────────────────────────
+  const root = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') root.classList.add('light');
+
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      root.classList.toggle('light');
+      localStorage.setItem('theme', root.classList.contains('light') ? 'light' : 'dark');
+    });
+  });
+  ─────────────────────────────────────────────────────
+*/
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 9999;
+
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  background: var(--surf2);
+  border: 1px solid var(--bdr2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    transform 0.2s;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(12deg);
+  border-color: var(--p);
+}
+
+/* Sun icon (shown in dark mode → click to go light) */
+.theme-toggle::before {
+  content: '☀︎';
+  font-size: 18px;
+  color: var(--t2);
+  display: block;
+  transition: opacity 0.3s, color 0.3s;
+  line-height: 1;
+}
+
+/* Moon icon (shown in light mode → click to go dark) */
+html.light .theme-toggle::before {
+  content: '☾';
+  color: var(--t2);
+}
+
+
+/* ─── Responsive ──────────────────────────────────── */
+@media (max-width: 600px) {
+  .page-wrapper {
+    padding: 20px 20px 60px;
+  }
+}
+
+
+/* ─── Light mode enhancements — warm, rich, premium ── */
+html.light body {
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(255,210,120,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 85%, rgba(160,200,255,0.11) 0%, transparent 55%),
+    var(--bg);
+}
+
+html.light .sec-label {
+  color: #2a52c9;
+}
+
+html.light .sec-title {
+  color: #12100e;
+}
+
+/* Warm tinted sidebar/topbar surfaces in light mode */
+html.light .card,
+html.light .card-flat {
+  background: rgba(180,140,60,0.045);
+  border-color: rgba(120,90,40,0.13);
+}
+
+html.light .skillBox {
+  background: rgba(180,140,60,0.04);
+  border-color: rgba(120,90,40,0.13);
+}
+
+/* ─── Cursor Pulse ────────────────────────────────── */
+@keyframes cursorPulse {
+  0%   { transform: translate(-50%, -50%) scale(1);    }
+  50%  { transform: translate(-50%, -50%) scale(1.08); }
+  100% { transform: translate(-50%, -50%) scale(1);    }
+}
