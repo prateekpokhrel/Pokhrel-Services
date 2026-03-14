@@ -25,9 +25,11 @@
   --swc:     60px;
   --ease:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
+  /* Semantic aliases (used in About section) */
   --txt:        var(--t1);
   --txt-muted:  var(--t2);
 
+  /* Theme toggle meta */
   --theme-icon-sun:   1;
   --theme-icon-moon:  0;
   --scanline-opacity: 0.022;
@@ -36,22 +38,28 @@
 /* ─── LIGHT MODE ──────────────────────────────────── */
 :root.light,
 html.light {
+  /* Warm ivory-cream base — not cold grey */
   --bg:      #faf7f2;
   --bg2:     #ffffff;
   --bg3:     #f0ebe2;
 
+  /* Surfaces with a warm amber tint */
   --surf:    rgba(180,140,80,0.06);
   --surf2:   rgba(180,140,80,0.11);
 
+  /* Borders — warm, visible but soft */
   --bdr:     rgba(120,90,40,0.13);
   --bdr2:    rgba(120,90,40,0.26);
 
+  /* Primary — deep indigo-blue, punchy */
   --p:       #2a52c9;
   --pdim:    rgba(42,82,201,0.12);
 
+  /* Accent colors — vivid in light context */
   --gold:    #b8820a;
   --green:   #0f9e58;
 
+  /* Typography — rich deep ink, not flat black */
   --t1:      #12100e;
   --t2:      #5a4e3c;
   --t3:      #a8997f;
@@ -64,6 +72,7 @@ html.light {
 
 }
 
+
 /* ─── Reset ───────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -71,21 +80,13 @@ html.light {
   padding: 0;
 }
 
-/* Prevent layout breaking on small screens */
-html, body {
-  width: 100%;
-  overflow-x: hidden;
-}
 
 /* ─── Root layout ─────────────────────────────────── */
 html,
 body,
 #root {
   width: 100%;
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
-  min-height: 100%;
+  height: 100%;
   background: var(--bg);
 }
 
@@ -93,20 +94,12 @@ body {
   font-family: 'Inter', sans-serif;
   color: var(--t1);
   line-height: 1.6;
-
+  /* Smooth theme transitions */
   transition:
     background 0.35s var(--ease),
     color 0.35s var(--ease);
 }
 
-/* Responsive media */
-img,
-video,
-canvas,
-svg {
-  max-width: 100%;
-  height: auto;
-}
 
 /* ─── About section ───────────────────────────────── */
 .skillGrid {
@@ -146,6 +139,7 @@ svg {
   color: var(--txt-muted);
   display: inline-flex;
   align-items: center;
+  transition: border-color 0.3s, background 0.3s, color 0.3s;
 }
 
 .chip-active {
@@ -159,6 +153,7 @@ html.light .chip-active {
   color: var(--t1);
   background: rgba(42,82,201,0.10);
 }
+
 
 /* ─── Scrollbar ───────────────────────────────────── */
 ::-webkit-scrollbar {
@@ -174,7 +169,8 @@ html.light .chip-active {
   border-radius: 2px;
 }
 
-/* ─── Background texture ─────────────────────────── */
+
+/* ─── Background texture (scanlines) ─────────────── */
 body::after {
   content: '';
   position: fixed;
@@ -191,7 +187,8 @@ body::after {
   z-index: 0;
 }
 
-/* ─── Layout ─────────────────────────────────────── */
+
+/* ─── Layout ──────────────────────────────────────── */
 .page-wrapper {
   padding: 52px 52px 80px;
   position: relative;
@@ -202,16 +199,18 @@ body::after {
 
 @keyframes pageIn {
   from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
-/* ─── Section header ─────────────────────────────── */
+
+/* ─── Section header ──────────────────────────────── */
 .sec-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   color: var(--p);
   letter-spacing: 1.5px;
   margin-bottom: 6px;
+  transition: color 0.3s;
 }
 
 .sec-title {
@@ -221,20 +220,24 @@ body::after {
   color: var(--t1);
   letter-spacing: -0.7px;
   line-height: 1.1;
+  transition: color 0.3s;
 }
 
 .sec-header {
   margin-bottom: 40px;
 }
 
-/* ─── Card ───────────────────────────────────────── */
+
+/* ─── Card ────────────────────────────────────────── */
 .card {
   background: var(--surf);
   border: 1px solid var(--bdr);
   border-radius: 12px;
   padding: 26px;
-  width: 100%;
-  transition: all 0.25s;
+  transition:
+    all 0.25s,
+    background 0.35s var(--ease),
+    border-color 0.35s var(--ease);
 }
 
 .card:hover {
@@ -243,27 +246,38 @@ body::after {
   transform: translateY(-3px);
 }
 
+html.light .card:hover {
+  box-shadow: 0 0 40px rgba(42,82,201,0.14), 0 4px 24px rgba(180,140,80,0.10);
+}
+
 .card-flat {
   background: var(--surf);
   border: 1px solid var(--bdr);
   border-radius: 12px;
   padding: 26px;
+  transition:
+    background 0.35s var(--ease),
+    border-color 0.35s var(--ease);
 }
 
-/* ─── Divider ───────────────────────────────────── */
+
+/* ─── Divider ─────────────────────────────────────── */
 .divider {
   height: 1px;
   background: var(--bdr);
   margin: 52px 0;
+  transition: background 0.35s;
 }
 
-/* ─── Buttons ───────────────────────────────────── */
+
+/* ─── Buttons ─────────────────────────────────────── */
 .btn {
   padding: 10px 24px;
   border-radius: 7px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
 .btn-fill {
@@ -275,7 +289,12 @@ body::after {
   background: #6e9df0;
 }
 
-/* ─── Reveal Animation ───────────────────────────── */
+html.light .btn-fill:hover {
+  background: #1f3ea8;
+}
+
+
+/* ─── Reveal Animation ────────────────────────────── */
 .reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -287,7 +306,8 @@ body::after {
   transform: translateY(0);
 }
 
-/* ─── Form ───────────────────────────────────────── */
+
+/* ─── Form ────────────────────────────────────────── */
 .f-input {
   width: 100%;
   padding: 11px 13px;
@@ -295,6 +315,10 @@ body::after {
   border: 1px solid var(--bdr);
   border-radius: 7px;
   color: var(--t1);
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    color 0.3s;
 }
 
 .f-input:focus {
@@ -302,7 +326,33 @@ body::after {
   outline: none;
 }
 
-/* ─── Theme Toggle Button ───────────────────────── */
+.f-input::placeholder {
+  color: var(--t3);
+}
+
+
+/* ─── Theme Toggle Button ─────────────────────────── */
+/*
+  Drop a button with class "theme-toggle" anywhere in your HTML.
+  It flips the "light" class on <html> and persists to localStorage.
+
+  Example markup:
+    <button class="theme-toggle" aria-label="Toggle theme"></button>
+
+  Wire up via JS (add to your main.js / App.tsx):
+  ─────────────────────────────────────────────────────
+  const root = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') root.classList.add('light');
+
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      root.classList.toggle('light');
+      localStorage.setItem('theme', root.classList.contains('light') ? 'light' : 'dark');
+    });
+  });
+  ─────────────────────────────────────────────────────
+*/
 .theme-toggle {
   position: fixed;
   top: 18px;
@@ -315,69 +365,78 @@ body::after {
 
   background: var(--surf2);
   border: 1px solid var(--bdr2);
-
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    transform 0.2s;
 }
 
-/* ─── Responsive Improvements ───────────────────── */
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(12deg);
+  border-color: var(--p);
+}
 
-/* Tablet */
-@media (max-width: 1024px) {
+/* Sun icon (shown in dark mode → click to go light) */
+.theme-toggle::before {
+  content: '☀︎';
+  font-size: 18px;
+  color: var(--t2);
+  display: block;
+  transition: opacity 0.3s, color 0.3s;
+  line-height: 1;
+}
 
-  html, body, #root {
-    padding: 18px;
-  }
+/* Moon icon (shown in light mode → click to go dark) */
+html.light .theme-toggle::before {
+  content: '☾';
+  color: var(--t2);
+}
 
+
+/* ─── Responsive ──────────────────────────────────── */
+@media (max-width: 600px) {
   .page-wrapper {
-    padding: 40px 30px 60px;
+    padding: 20px 20px 60px;
   }
-
 }
 
-/* Mobile */
-@media (max-width: 768px) {
 
-  html, body, #root {
-    padding: 14px;
-  }
-
-  .page-wrapper {
-    padding: 30px 20px 50px;
-  }
-
-  .sec-title {
-    font-size: 28px;
-  }
-
-  .card,
-  .card-flat {
-    padding: 20px;
-  }
-
+/* ─── Light mode enhancements — warm, rich, premium ── */
+html.light body {
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(255,210,120,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 85%, rgba(160,200,255,0.11) 0%, transparent 55%),
+    var(--bg);
 }
 
-/* Small phones */
-@media (max-width: 480px) {
-
-  html, body, #root {
-    padding: 12px;
-  }
-
-  .page-wrapper {
-    padding: 24px 16px 40px;
-  }
-
-  .sec-title {
-    font-size: 24px;
-  }
-
+html.light .sec-label {
+  color: #2a52c9;
 }
 
-/* ─── Cursor Pulse ───────────────────────────────── */
+html.light .sec-title {
+  color: #12100e;
+}
+
+/* Warm tinted sidebar/topbar surfaces in light mode */
+html.light .card,
+html.light .card-flat {
+  background: rgba(180,140,60,0.045);
+  border-color: rgba(120,90,40,0.13);
+}
+
+html.light .skillBox {
+  background: rgba(180,140,60,0.04);
+  border-color: rgba(120,90,40,0.13);
+}
+
+/* ─── Cursor Pulse ────────────────────────────────── */
 @keyframes cursorPulse {
-  0%   { transform: translate(-50%, -50%) scale(1); }
+  0%   { transform: translate(-50%, -50%) scale(1);    }
   50%  { transform: translate(-50%, -50%) scale(1.08); }
-  100% { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(1);    }
 }
