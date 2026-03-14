@@ -21,36 +21,32 @@ export default function App() {
   const [isNight, setIsNight]     = useState(true)
   const [isMobile, setIsMobile]   = useState(false)
 
-  // ── Detect mobile screen ──────────────────────────
+  // Detect screen size
   useEffect(() => {
 
-    const checkScreen = () => {
+    const check = () => {
       const mobile = window.innerWidth <= 768
       setIsMobile(mobile)
 
-      // auto collapse sidebar on mobile
       if (mobile) {
         setCollapsed(true)
       }
     }
 
-    checkScreen()
-    window.addEventListener('resize', checkScreen)
+    check()
+    window.addEventListener('resize', check)
 
-    return () => window.removeEventListener('resize', checkScreen)
+    return () => window.removeEventListener('resize', check)
 
   }, [])
 
-  // ── Restore saved theme preference on mount ──────
+  // Restore theme
   useEffect(() => {
+
     const saved = localStorage.getItem('theme')
 
-    if (saved === 'light') {
-      setIsNight(false)
-    } 
-    else if (saved === 'dark') {
-      setIsNight(true)
-    } 
+    if (saved === 'light') setIsNight(false)
+    else if (saved === 'dark') setIsNight(true)
     else {
       const h = new Date().getHours()
       setIsNight(h < 6 || h >= 18)
@@ -58,46 +54,40 @@ export default function App() {
 
   }, [])
 
-  // ── Sync isNight → html class + localStorage ─────
+  // Sync theme
   useEffect(() => {
 
     const root = document.documentElement
 
     if (isNight) {
       root.classList.remove('light')
-      localStorage.setItem('theme', 'dark')
+      localStorage.setItem('theme','dark')
     } 
     else {
       root.classList.add('light')
-      localStorage.setItem('theme', 'light')
+      localStorage.setItem('theme','light')
     }
 
   }, [isNight])
 
-  // Sidebar width
   const sw = collapsed ? 'var(--swc)' : 'var(--sw)'
-
-  // On mobile we disable sidebar offset
-  const leftOffset = isMobile ? 0 : sw
 
   return (
 
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'var(--bg)',
-        overflow: 'hidden'
-      }}
-    >
+    <div style={{
+      position:'fixed',
+      inset:0,
+      background:'var(--bg)',
+      overflow:'hidden'
+    }}>
 
-      {/* 🔵 Background Layer */}
+      {/* Background */}
       <ParticleCanvas isNight={isNight} />
 
-      {/* 🔵 Glow Effect Layer */}
+      {/* Cursor */}
       <CursorGlow />
 
-      {/* 🔵 Sidebar */}
+      {/* Sidebar */}
       <Sidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed(v => !v)}
@@ -105,41 +95,37 @@ export default function App() {
         onModeToggle={() => setIsNight(v => !v)}
       />
 
-      {/* 🔵 Main Content */}
+      {/* Main Content */}
       <div
         id="main-scroll"
         style={{
-          position: 'fixed',
-          left: leftOffset,
-          top: 0,
-          right: 0,
-          bottom: 0,
-
-          overflowY: 'auto',
-          overflowX: 'hidden',
-
-          transition: 'left 0.45s var(--ease)',
-
-          zIndex: 10,
-          WebkitOverflowScrolling: 'touch'
+          position:'fixed',
+          left: isMobile ? 0 : sw,
+          top:0,
+          right:0,
+          bottom:0,
+          overflowY:'auto',
+          overflowX:'hidden',
+          transition:'left 0.45s var(--ease)',
+          zIndex:10
         }}
       >
 
         <Topbar />
 
         <Routes>
-          <Route path="/"             element={<Home />}         />
-          <Route path="/about"        element={<About />}        />
-          <Route path="/education"    element={<Education />}    />
-          <Route path="/services"     element={<Services />}     />
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/education" element={<Education />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/certificates" element={<Certificates />} />
-          <Route path="/projects"     element={<Projects />}     />
-          <Route path="/contact"      element={<Contact />}      />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
 
       </div>
 
-      {/* 🔵 Floating AI Assistant */}
+      {/* AI Assistant */}
       <AIOrb />
 
     </div>
