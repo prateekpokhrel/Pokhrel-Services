@@ -1,5 +1,6 @@
 import { useReveal } from '../hooks/useReveal'
 import { useState } from 'react'
+import emailjs from "@emailjs/browser";
 
 // ── Project logo imports ───────────────────────────────────────────────────
 import suisImg      from '../assets/suis.png'
@@ -8,44 +9,44 @@ import myrecipesImg from '../assets/myrecipe.png'
 import kavoutImg    from '../assets/kavout.png'
 import nagarsetuImg  from '../assets/nagarsetu.png'
 
-const services = [
-  {
-    icon: '🏗️',
-    title: 'Full Stack Development',
-    desc: 'End-to-end web applications using Java Spring Boot backends with React.js frontends. Scalable, testable, and production-ready from day one.',
-    tags: ['Java', 'Spring Boot', 'React.js', 'MySQL'],
-  },
-  {
-    icon: '🤖',
-    title: 'AI / ML Integration',
-    desc: 'Embedding intelligent models into Java systems — recommendation engines, NLP pipelines, and predictive analytics.',
-    tags: ['Python', 'TensorFlow', 'Spring Boot', 'REST API'],
-  },
-  {
-    icon: '⚙️',
-    title: 'Backend Engineering',
-    desc: 'High-performance Java microservices with Spring Boot.',
-    tags: ['Java', 'Spring Security', 'MySQL', 'Docker'],
-  },
-  {
-    icon: '🎨',
-    title: 'Frontend Development',
-    desc: 'Modern React.js interfaces with exceptional UX.',
-    tags: ['React.js', 'JavaScript', 'CSS', 'Tailwind'],
-  },
-  {
-    icon: '🔗',
-    title: 'API Development',
-    desc: 'RESTful API design with versioning and security.',
-    tags: ['REST API', 'Spring Boot', 'Postman', 'JWT'],
-  },
-  {
-    icon: '🛡️',
-    title: 'System Architecture',
-    desc: 'Designing resilient distributed systems.',
-    tags: ['AWS', 'Docker', 'Microservices', 'Redis'],
-  },
-]
+// const services = [
+//   {
+//     icon: '🏗️',
+//     title: 'Full Stack Development',
+//     desc: 'End-to-end web applications using Java Spring Boot backends with React.js frontends. Scalable, testable, and production-ready from day one.',
+//     tags: ['Java', 'Spring Boot', 'React.js', 'MySQL'],
+//   },
+//   {
+//     icon: '🤖',
+//     title: 'AI / ML Integration',
+//     desc: 'Embedding intelligent models into Java systems — recommendation engines, NLP pipelines, and predictive analytics.',
+//     tags: ['Python', 'TensorFlow', 'Spring Boot', 'REST API'],
+//   },
+//   {
+//     icon: '⚙️',
+//     title: 'Backend Engineering',
+//     desc: 'High-performance Java microservices with Spring Boot.',
+//     tags: ['Java', 'Spring Security', 'MySQL', 'Docker'],
+//   },
+//   {
+//     icon: '🎨',
+//     title: 'Frontend Development',
+//     desc: 'Modern React.js interfaces with exceptional UX.',
+//     tags: ['React.js', 'JavaScript', 'CSS', 'Tailwind'],
+//   },
+//   {
+//     icon: '🔗',
+//     title: 'API Development',
+//     desc: 'RESTful API design with versioning and security.',
+//     tags: ['REST API', 'Spring Boot', 'Postman', 'JWT'],
+//   },
+//   {
+//     icon: '🛡️',
+//     title: 'System Architecture',
+//     desc: 'Designing resilient distributed systems.',
+//     tags: ['AWS', 'Docker', 'Microservices', 'Redis'],
+//   },
+// ]
 
 const process = [
   { step: '01', title: 'Discovery',    desc: 'Understanding your requirements.' },
@@ -459,111 +460,155 @@ export default function Services() {
         ))}
       </div>
 
-      {/* ── SECTION 3 — HIRE ME FORM ─────────────────────────────────────── */}
-      <div className="divider" />
+{/* ── SECTION 3 — HIRE ME ─── */}
+<div className="divider" />
 
-      <div className="sec-header reveal">
-        <div className="sec-label">CLIENT PROJECT</div>
-        <div className="sec-title">Hire Me</div>
+<div className="sec-header reveal">
+  <div className="sec-label">CLIENT PROJECT</div>
+  <div className="sec-title">Hire Me</div>
+</div>
+
+<p className="reveal" style={{ fontSize: 15, color: 'var(--t2)', marginBottom: 32 }}>
+  Have a specific project in mind? Fill out the form below and I'll get
+  back to you within 24 hours with a detailed proposal.
+</p>
+
+<div className="hire-form-wrap reveal">
+  {submitted ? (
+    <div className="form-success">
+      <div style={{ fontWeight: 800, fontSize: 20, marginBottom: 10 }}>Request received!</div>
+      <div style={{ fontSize: 14, color: 'var(--t3)' }}>
+        Thanks for reaching out. I'll review your project details and respond within 24 hours.
+      </div>
+    </div>
+  ) : (
+    <form onSubmit={async (e) => {
+      e.preventDefault();
+      setSubmitting(true);
+
+      const templateParams = {
+        full_name: form.name,
+        email: form.email,
+        phone: form.phone,
+        company: form.company,
+        project_type: form.projectType,
+        budget_range: form.budget,
+        timeline: form.timeline,
+        tech_stack: form.techStack,
+        project_description: form.description,
+        reference_links: form.referenceLinks,
+        source: form.hearAbout
+      };
+
+      try {
+
+        /* Email to YOU */
+        await emailjs.send(
+          "service_7n28cf2",          // YOUR SERVICE ID
+          "template_44ywr21",   // TEMPLATE FOR YOU
+          templateParams,
+          "YqTrBf5LEM3Ijfn2b"         // PUBLIC KEY
+        );
+
+        /* Auto reply to CLIENT */
+        await emailjs.send(
+          "service_7n28cf2",
+          "template_f9qn4ma",
+          templateParams,
+          "YqTrBf5LEM3Ijfn2b"
+        );
+
+        setSubmitted(true);
+      } catch (err) {
+        console.error("EmailJS Error:", err);
+        alert("Something went wrong. Please try again.");
+      }
+
+      setSubmitting(false);
+    }}>
+
+      <div className="hire-form-grid">
+
+        <div className="form-field">
+          <label className="form-label">Full Name <span>*</span></label>
+          <input className="form-input" name="name" value={form.name} onChange={handleChange} placeholder="Jane Doe" required />
+        </div>
+
+        <div className="form-field">
+          <label className="form-label">Email <span>*</span></label>
+          <input className="form-input" type="email" name="email" value={form.email} onChange={handleChange} placeholder="jane@example.com" required />
+        </div>
+
+        <div className="form-field">
+          <label className="form-label">Phone / WhatsApp</label>
+          <input className="form-input" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 98765 43210" />
+        </div>
+
+        <div className="form-field">
+          <label className="form-label">Company / Organisation</label>
+          <input className="form-input" name="company" value={form.company} onChange={handleChange} placeholder="Acme Inc. (optional)" />
+        </div>
+
+        <div className="form-field">
+          <label className="form-label">Project Type <span>*</span></label>
+          <select className="form-select" name="projectType" value={form.projectType} onChange={handleChange} required>
+            <option value="">Select a type…</option>
+            {projectTypes.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label className="form-label">Budget Range <span>*</span></label>
+          <select className="form-select" name="budget" value={form.budget} onChange={handleChange} required>
+            <option value="">Select range…</option>
+            {budgetRanges.map(b => <option key={b} value={b}>{b}</option>)}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label className="form-label">Expected Timeline <span>*</span></label>
+          <select className="form-select" name="timeline" value={form.timeline} onChange={handleChange} required>
+            <option value="">Select timeline…</option>
+            {timelines.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
+
+        <div className="form-field">
+          <label className="form-label">Preferred Tech Stack</label>
+          <input className="form-input" name="techStack" value={form.techStack} onChange={handleChange} placeholder="e.g. React, Spring Boot, MySQL…" />
+        </div>
+
+        <div className="form-field full">
+          <label className="form-label">Project Description <span>*</span></label>
+          <textarea className="form-textarea" name="description" value={form.description} onChange={handleChange} placeholder="Describe what you want to build, the problem it solves, key features, target users, and any specific requirements or constraints…" required style={{ minHeight: 130 }} />
+        </div>
+
+        <div className="form-field full">
+          <label className="form-label">Reference Links / Inspiration</label>
+          <input className="form-input" name="referenceLinks" value={form.referenceLinks} onChange={handleChange} placeholder="Figma, Notion doc, competitor sites, GitHub repo… (optional)" />
+        </div>
+
+        <div className="form-field full">
+          <label className="form-label">How did you find me?</label>
+          <input className="form-input" name="hearAbout" value={form.hearAbout} onChange={handleChange} placeholder="LinkedIn, GitHub, referral, Google…" />
+        </div>
+
       </div>
 
-      <p className="reveal" style={{ fontSize: 15, color: 'var(--t2)', marginBottom: 32 }}>
-        Have a specific project in mind? Fill out the form below and I'll get
-        back to you within 24 hours with a detailed proposal.
-      </p>
+      <button type="submit" className="submit-btn" disabled={submitting}>
+        {submitting ? (
+          <>
+            <span style={{ display: 'inline-block', width: 14, height: 14, border: '2px solid #0a0a0a', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+            Sending…
+          </>
+        ) : <>Submit Request →</>}
+      </button>
 
-      <div className="hire-form-wrap reveal">
-        {submitted ? (
-          <div className="form-success">
-            <div className="form-success-icon">🚀</div>
-            <div style={{ fontWeight: 800, fontSize: 20, marginBottom: 10 }}>Request received!</div>
-            <div style={{ fontSize: 14, color: 'var(--t3)' }}>
-              Thanks for reaching out. I'll review your project details and respond within 24 hours.
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="hire-form-grid">
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
-              <div className="form-field">
-                <label className="form-label">Full Name <span>*</span></label>
-                <input className="form-input" name="name" value={form.name} onChange={handleChange} placeholder="Jane Doe" required />
-              </div>
-
-              <div className="form-field">
-                <label className="form-label">Email <span>*</span></label>
-                <input className="form-input" type="email" name="email" value={form.email} onChange={handleChange} placeholder="jane@example.com" required />
-              </div>
-
-              <div className="form-field">
-                <label className="form-label">Phone / WhatsApp</label>
-                <input className="form-input" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 98765 43210" />
-              </div>
-
-              <div className="form-field">
-                <label className="form-label">Company / Organisation</label>
-                <input className="form-input" name="company" value={form.company} onChange={handleChange} placeholder="Acme Inc. (optional)" />
-              </div>
-
-              <div className="form-field">
-                <label className="form-label">Project Type <span>*</span></label>
-                <select className="form-select" name="projectType" value={form.projectType} onChange={handleChange} required>
-                  <option value="">Select a type…</option>
-                  {projectTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label className="form-label">Budget Range <span>*</span></label>
-                <select className="form-select" name="budget" value={form.budget} onChange={handleChange} required>
-                  <option value="">Select range…</option>
-                  {budgetRanges.map(b => <option key={b} value={b}>{b}</option>)}
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label className="form-label">Expected Timeline <span>*</span></label>
-                <select className="form-select" name="timeline" value={form.timeline} onChange={handleChange} required>
-                  <option value="">Select timeline…</option>
-                  {timelines.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label className="form-label">Preferred Tech Stack</label>
-                <input className="form-input" name="techStack" value={form.techStack} onChange={handleChange} placeholder="e.g. React, Spring Boot, MySQL…" />
-              </div>
-
-              <div className="form-field full">
-                <label className="form-label">Project Description <span>*</span></label>
-                <textarea className="form-textarea" name="description" value={form.description} onChange={handleChange} placeholder="Describe what you want to build, the problem it solves, key features, target users, and any specific requirements or constraints…" required style={{ minHeight: 130 }} />
-              </div>
-
-              <div className="form-field full">
-                <label className="form-label">Reference Links / Inspiration</label>
-                <input className="form-input" name="referenceLinks" value={form.referenceLinks} onChange={handleChange} placeholder="Figma, Notion doc, competitor sites, GitHub repo… (optional)" />
-              </div>
-
-              <div className="form-field full">
-                <label className="form-label">How did you find me?</label>
-                <input className="form-input" name="hearAbout" value={form.hearAbout} onChange={handleChange} placeholder="LinkedIn, GitHub, referral, Google…" />
-              </div>
-
-            </div>
-
-            <button type="submit" className="submit-btn" disabled={submitting}>
-              {submitting ? (
-                <>
-                  <span style={{ display: 'inline-block', width: 14, height: 14, border: '2px solid #0a0a0a', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-                  Sending…
-                </>
-              ) : <>Submit Request →</>}
-            </button>
-
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          </form>
-        )}
-      </div>
+    </form>
+  )}
+</div>
 
     </div>
   )
