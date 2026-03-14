@@ -66,35 +66,20 @@ export default function Sidebar({
           position: "relative",
         }}
       >
-        <img
-          src={logo}
-          alt="logo"
-          style={{ width: 36, height: 36, objectFit: "contain" }}
-        />
-
-        {!collapsed && (
-          <div>
-            <div
-              style={{
-                fontWeight: 700,
-                color: "var(--t1)",
-                fontSize: 15,
-              }}
-            >
-              Pratik Pokhrel
-            </div>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: "var(--p)",
-              }}
-            >
-              Full Stack Developer
-            </div>
-          </div>
-        )}
-
+        <div>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              transition: "all 0.3s ease",
+              transform: collapsed ? "rotate(0deg)" : "rotate(360deg)",
+            }}
+          />
+         
+        </div> 
         <button
   onClick={onToggle}
   style={{

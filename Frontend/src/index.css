@@ -38,38 +38,39 @@
 /* ─── LIGHT MODE ──────────────────────────────────── */
 :root.light,
 html.light {
-  /* Warm ivory-cream base — not cold grey */
-  --bg:      #faf7f2;
+  /* Clean, cool grayish-blue base (As requested) */
+  --bg:      #f0f4f8;
+  /* Pure white for components/boxes (As requested) */
   --bg2:     #ffffff;
-  --bg3:     #f0ebe2;
+  /* Slightly deeper shade for secondary backgrounds or hovers */
+  --bg3:     #e2e8f0;
 
-  /* Surfaces with a warm amber tint */
-  --surf:    rgba(180,140,80,0.06);
-  --surf2:   rgba(180,140,80,0.11);
+  /* Surfaces with a cool slate tint to match the new background */
+  --surf:    rgba(15, 23, 42, 0.04);
+  --surf2:   rgba(15, 23, 42, 0.08);
 
-  /* Borders — warm, visible but soft */
-  --bdr:     rgba(120,90,40,0.13);
-  --bdr2:    rgba(120,90,40,0.26);
+  /* Borders — crisp, cool, and subtle */
+  --bdr:     rgba(15, 23, 42, 0.1);
+  --bdr2:    rgba(15, 23, 42, 0.2);
 
-  /* Primary — deep indigo-blue, punchy */
+  /* Primary — deep indigo-blue, punchy (Kept from original, works beautifully here) */
   --p:       #2a52c9;
-  --pdim:    rgba(42,82,201,0.12);
+  --pdim:    rgba(42, 82, 201, 0.12);
 
-  /* Accent colors — vivid in light context */
-  --gold:    #b8820a;
-  --green:   #0f9e58;
+  /* Accent colors — adjusted slightly to pop against the cool background */
+  --gold:    #d97706; /* A sharp amber to contrast the cool base */
+  --green:   #10b981; /* Fresh emerald green */
 
-  /* Typography — rich deep ink, not flat black */
-  --t1:      #12100e;
-  --t2:      #5a4e3c;
-  --t3:      #a8997f;
+  /* Typography — cool dark slate, avoiding flat black or warm brown */
+  --t1:      #0f172a; /* Main text: very dark slate */
+  --t2:      #475569; /* Muted text: medium slate gray */
+  --t3:      #94a3b8; /* Disabled/placeholder text: light gray */
 
-  --txt:        var(--t1);
-  --txt-muted:  var(--t2);
+  --txt:         var(--t1);
+  --txt-muted:   var(--t2);
 
   --scanline-opacity: 0.008;
 }
-
 }
 
 
