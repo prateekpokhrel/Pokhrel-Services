@@ -14,6 +14,7 @@ import Services     from './pages/Services'
 import Certificates from './pages/Certificates'
 import Projects     from './pages/Projects'
 import Contact      from './pages/Contact'
+import Review      from './pages/Review'
 
 export default function App() {
   const [collapsed, setCollapsed] = useState(false)
@@ -89,6 +90,7 @@ export default function App() {
           <Route path="/certificates" element={<Certificates />} />
           <Route path="/projects"     element={<Projects />}     />
           <Route path="/contact"      element={<Contact />}      />
+          <Route path = "/reviews"      element={<Review />}      />
         </Routes>
       </div>
 

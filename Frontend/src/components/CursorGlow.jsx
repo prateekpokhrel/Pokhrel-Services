@@ -28,15 +28,15 @@ export default function CursorGlow({ isNight }) {
   // 🌗 Sync with theme
   const glowColor = isNight
     ? "rgba(91,141,238,0.06)"   // soft blue at night
-    : "rgba(60,200,255,0.05)";  // soft cyan in day
+    : "rgba(60,200,255,0.05)";  // soft cyan in day ""
 
   return (
     <div
       ref={ref}
       style={{
         position: "fixed",
-        width: 220,          // smaller
-        height: 220,
+        width: 120,          // smaller
+        height: 120,
         borderRadius: "50%",
         pointerEvents: "none",
         zIndex: 9997,

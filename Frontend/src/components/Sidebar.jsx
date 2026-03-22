@@ -9,7 +9,7 @@ import {
   FaFile,
   FaScrewdriverWrench,
   FaDiagramProject,
-  FaSun, FaMoon 
+  FaSun, FaMoon , FaStar
 } from "react-icons/fa6";
 
 const navItems = [
@@ -20,6 +20,7 @@ const navItems = [
   { path: "/education", icon: <FaGraduationCap size={16} />, label: "Education" },
   { path: "/certificates", icon: <FaFile size={16} />, label: "Certificates" },
   { path: "/contact", icon: <FaAddressBook size={16} />, label: "Contact" },
+  { path: "/reviews", icon: <FaStar size={16} />, label: "Reviews" },
 ];
 
 export default function Sidebar({
