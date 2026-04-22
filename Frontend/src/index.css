@@ -38,37 +38,22 @@
 /* ─── LIGHT MODE ──────────────────────────────────── */
 :root.light,
 html.light {
-  /* Clean, cool grayish-blue base (As requested) */
   --bg:      #f0f4f8;
-  /* Pure white for components/boxes (As requested) */
   --bg2:     #ffffff;
-  /* Slightly deeper shade for secondary backgrounds or hovers */
   --bg3:     #e2e8f0;
-
-  /* Surfaces with a cool slate tint to match the new background */
   --surf:    rgba(15, 23, 42, 0.04);
   --surf2:   rgba(15, 23, 42, 0.08);
-
-  /* Borders — crisp, cool, and subtle */
   --bdr:     rgba(15, 23, 42, 0.1);
   --bdr2:    rgba(15, 23, 42, 0.2);
-
-  /* Primary — deep indigo-blue, punchy (Kept from original, works beautifully here) */
   --p:       #2a52c9;
   --pdim:    rgba(42, 82, 201, 0.12);
-
-  /* Accent colors — adjusted slightly to pop against the cool background */
-  --gold:    #d97706; /* A sharp amber to contrast the cool base */
-  --green:   #10b981; /* Fresh emerald green */
-
-  /* Typography — cool dark slate, avoiding flat black or warm brown */
-  --t1:      #0f172a; /* Main text: very dark slate */
-  --t2:      #475569; /* Muted text: medium slate gray */
-  --t3:      #94a3b8; /* Disabled/placeholder text: light gray */
-
+  --gold:    #d97706;
+  --green:   #10b981;
+  --t1:      #0f172a;
+  --t2:      #475569;
+  --t3:      #94a3b8;
   --txt:         var(--t1);
   --txt-muted:   var(--t2);
-
   --scanline-opacity: 0.008;
 }
 }
@@ -95,7 +80,6 @@ body {
   font-family: 'Inter', sans-serif;
   color: var(--t1);
   line-height: 1.6;
-  /* Smooth theme transitions */
   transition:
     background 0.35s var(--ease),
     color 0.35s var(--ease);
@@ -333,44 +317,20 @@ html.light .btn-fill:hover {
 
 
 /* ─── Theme Toggle Button ─────────────────────────── */
-/*
-  Drop a button with class "theme-toggle" anywhere in your HTML.
-  It flips the "light" class on <html> and persists to localStorage.
-
-  Example markup:
-    <button class="theme-toggle" aria-label="Toggle theme"></button>
-
-  Wire up via JS (add to your main.js / App.tsx):
-  ─────────────────────────────────────────────────────
-  const root = document.documentElement;
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') root.classList.add('light');
-
-  document.querySelectorAll('.theme-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-      root.classList.toggle('light');
-      localStorage.setItem('theme', root.classList.contains('light') ? 'light' : 'dark');
-    });
-  });
-  ─────────────────────────────────────────────────────
-*/
 .theme-toggle {
   position: fixed;
   top: 18px;
   right: 20px;
   z-index: 9999;
-
   width: 40px;
   height: 40px;
   border-radius: 50%;
-
   background: var(--surf2);
   border: 1px solid var(--bdr2);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-
   transition:
     background 0.3s,
     border-color 0.3s,
@@ -382,7 +342,6 @@ html.light .btn-fill:hover {
   border-color: var(--p);
 }
 
-/* Sun icon (shown in dark mode → click to go light) */
 .theme-toggle::before {
   content: '☀︎';
   font-size: 18px;
@@ -392,22 +351,79 @@ html.light .btn-fill:hover {
   line-height: 1;
 }
 
-/* Moon icon (shown in light mode → click to go dark) */
 html.light .theme-toggle::before {
   content: '☾';
   color: var(--t2);
 }
 
 
+/* ─── Contact Page ────────────────────────────────── */
+
+/* Outer layout: form + sidebar side by side */
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Name / Email row inside the form */
+.contact-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+/* Sidebar column stack */
+.contact-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Padding overrides already handled by .card / .card-flat defaults,
+   but these classes let us tighten them on small screens below */
+.contact-card-inner  { padding: 26px; }
+.contact-sidebar-card { padding: 22px; }
+
+
 /* ─── Responsive ──────────────────────────────────── */
+
+/* Tablet: sidebar drops below form */
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* Mobile: tighten padding, stack name/email fields */
 @media (max-width: 600px) {
   .page-wrapper {
     padding: 20px 20px 60px;
   }
+
+  .contact-form-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .contact-card-inner {
+    padding: 18px;
+  }
+
+  .contact-sidebar-card {
+    padding: 18px;
+  }
+
+  .contact-quick-response {
+    padding: 12px 14px !important;
+  }
 }
 
 
-/* ─── Light mode enhancements — warm, rich, premium ── */
+/* ─── Light mode enhancements ─────────────────────── */
 html.light body {
   background:
     radial-gradient(ellipse 80% 50% at 15% 10%, rgba(255,210,120,0.12) 0%, transparent 60%),
@@ -423,7 +439,6 @@ html.light .sec-title {
   color: #12100e;
 }
 
-/* Warm tinted sidebar/topbar surfaces in light mode */
 html.light .card,
 html.light .card-flat {
   background: rgba(180,140,60,0.045);
@@ -434,6 +449,7 @@ html.light .skillBox {
   background: rgba(180,140,60,0.04);
   border-color: rgba(120,90,40,0.13);
 }
+
 
 /* ─── Cursor Pulse ────────────────────────────────── */
 @keyframes cursorPulse {
