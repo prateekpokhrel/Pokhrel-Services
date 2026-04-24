@@ -8,6 +8,7 @@ import segaImg      from '../assets/sega.png'
 import myrecipesImg from '../assets/myrecipe.png'
 import kavoutImg    from '../assets/kavout.png'
 import nagarsetuImg  from '../assets/nagarsetu.png'
+import dokoImg      from '../assets/doko.png'
 
 // const services = [
 //   {
@@ -66,6 +67,17 @@ const liveProjects = [
     status: 'Live',
     url: 'https://suis-rouge.vercel.app/',
     color: '#4f8ef7',
+  },
+  {
+    id: 'doko',
+    logo: dokoImg,
+    title: 'DokoXpress',
+    subtitle: 'Multi-Vendor E-commerce Platform',
+    desc: 'Comprehensive multi-vendor e-commerce platform built with a Java Spring Boot backend and React frontend. Features include product management, order processing, user authentication with JWT, and AWS deployment for scalability.',
+    tags: ['React.js', 'Java', 'Spring Boot', 'MySQL', 'JWT', 'AWS'],
+    status: 'Ongoing development',
+    url: '#',
+    color: '#4fc97f',
   },
   {
     id: 'sega',

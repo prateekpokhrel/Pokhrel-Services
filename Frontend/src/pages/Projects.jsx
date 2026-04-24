@@ -8,21 +8,31 @@ const projects = [
     title: 'SUIS - Smart University Intelligence System',
     desc: 'AI-enabled university management platform designed to replace legacy SAP-based systems. It integrates academic, administrative, and operational modules into a single scalable platform with centralized data flow and real-time institutional analytics.',
     tags: ['Java', 'Spring Boot', 'React', 'MySQL', 'AI'],
-    status: 'Active Development',
+    status: 'Developed & Deployed',
     year: '2025',
     link:'https://suis-rouge.vercel.app/'
   },
   {
     num: '02',
+    category: 'E-commerce',
+    title: 'DokoXpress - Multi-Vendor E-commerce Platform',
+    desc: 'Comprehensive multi-vendor e-commerce platform built with a Java Spring Boot backend and React frontend. Features include product management, order processing, user authentication with JWT, and AWS deployment for scalability.',
+    tags: ['Java', 'Spring Boot', 'React','Tailwind CSS', 'MySQL','JWT', 'AWS'],
+    status: 'Active Development',
+    year: '2026',
+    
+  },
+  {
+    num: '03',
     category: 'Emergency Infrastructure',
     title: 'SEGA - Smart Emergency Governance Architecture',
     desc: 'Centralized emergency-governance infrastructure built within SUIS for incident reporting, hierarchical escalation, real-time monitoring, and safety compliance across institutions.',
     tags: ['Java', 'Spring Boot', 'REST APIs', 'MySQL'],
-    status: 'Active Development',
+    status: 'Developed & Deployed under SUIS',
     year: '2025',
   },
   {
-    num: '03',
+    num: '04',
     category: 'FinTech / AI',
     title: 'Kavout - AI Stock Forecasting Platform',
     desc: 'AI-powered time-series forecasting platform for the Indian stock market analyzing companies listed on NSE. Generates predictive insights for 1-day, 15-day, and 30-day horizons with a built-in paper trading engine for strategy simulation.',
@@ -32,7 +42,7 @@ const projects = [
     link: 'https://kavout-ltsf.vercel.app/' 
   },
   {
-    num: '04',
+    num: '05',
     category: 'Civic Tech',
     title: 'AI Smart City Issue Solver',
     desc: 'AI-driven civic issue reporting platform where citizens can submit problems such as road damage, waste management, or electricity issues. The system categorizes issues using AI and routes them to the appropriate municipal department.',
@@ -42,7 +52,7 @@ const projects = [
     link: 'https://agentic-city-problem-solver.vercel.app/'
   },
   {
-    num: '05',
+    num: '06',
     category: 'Web Platform',
     title: 'MyRecipes - Recipe Recommender Platform',
     desc: 'Interactive recipe discovery platform allowing users to explore, save, and share cooking recipes. Features search filtering, personalized recipe collections, and a clean responsive UI.',
@@ -52,7 +62,7 @@ const projects = [
     link: 'https://my-recipes-pi.vercel.app/'
   },
   {
-    num: '06',
+    num: '07',
     category: 'OTT Platform',
     title: 'Neplix',
     desc: 'OTT streaming platform designed to promote Nepali movies, series, and digital content. Features a modern React-based interface, backend APIs for content management, and a scalable architecture for streaming and user engagement.',
