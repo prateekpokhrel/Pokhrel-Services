@@ -83,7 +83,7 @@ const education = [
 ]
 
 const gpaData = [
-  { label: 'B.Tech CGPA', value: '7.44/10', pct: 88.6, color: 'var(--p)' },
+  { label: 'B.Tech SGPA', value: '9.08/10', pct: 88.6, color: 'var(--p)' },
   { label: '+2 Science GPA', value: '3.59/4.00', pct: 89.75, color: 'var(--t2)' },
   { label: 'Secondary GPA', value: '3.45/4.00', pct: 86.25, color: 'var(--t3)' },
 ]
