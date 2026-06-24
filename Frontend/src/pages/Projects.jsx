@@ -20,7 +20,7 @@ const projects = [
     tags: ['Java', 'Spring Boot', 'React','Tailwind CSS', 'MySQL','JWT', 'AWS'],
     status: 'Active Development',
     year: '2026',
-    
+    link: '#'
   },
   {
     num: '03',
@@ -30,6 +30,7 @@ const projects = [
     tags: ['Java', 'Spring Boot', 'REST APIs', 'MySQL'],
     status: 'Developed & Deployed under SUIS',
     year: '2025',
+    link: '#'
   },
   {
     num: '04',
@@ -39,7 +40,7 @@ const projects = [
     tags: ['Python', 'AI/ML', 'Linear Regression Models', 'React', 'Fast API'],
     status: 'Active Development',
     year: '2026',
-    link: 'https://kavout-ltsf.vercel.app/' 
+    link: 'https://kavout-i38dqovas-prateekpokhrels-projects.vercel.app/' 
   },
   {
     num: '05',
@@ -69,6 +70,7 @@ const projects = [
     tags: ['Java', 'Spring Boot', 'React', 'SQL', 'Supabase'],
     status: 'Completed',
     year: '2024',
+    link: '#'
   }
 ]
 

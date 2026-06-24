@@ -109,7 +109,7 @@ const liveProjects = [
     desc: 'Time-series forecasting platform for NSE stocks generating predictive insights for 1-day, 15-day, and 30-day horizons with a built-in paper trading engine for strategy simulation.',
     tags: ['Python', 'TensorFlow', 'React.js', 'FastAPI'],
     status: 'Live',
-    url: 'https://kavout-ltsf.vercel.app/',
+    url: 'https://kavout-i38dqovas-prateekpokhrels-projects.vercel.app/',
     color: '#f7d44f',
   },
   {
