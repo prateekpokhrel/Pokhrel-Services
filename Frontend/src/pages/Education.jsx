@@ -263,7 +263,7 @@ export default function Education() {
 
             {[
               { icon: <i className="fa-solid fa-graduation-cap"></i>, label: 'Current Degree', value: 'B.Tech CSE' },
-              { icon: <i className="fa-solid fa-award"></i>, label: 'Current CGPA', value: '7.44 / 10' },
+              { icon: <i className="fa-solid fa-award"></i>, label: 'Current CGPA', value: '7.73 / 10' },
               { icon: <i className="fa-solid fa-building-columns"></i>, label: 'University', value: 'KIIT, Bhubaneswar' },
               { icon: <i className="fa-solid fa-user-graduate"></i>, label: 'Graduating', value: '2027 (Expected)' },
               { icon: <i className="fa-solid fa-location-dot"></i>, label: 'Origin', value: 'Nepal' },
