@@ -1,617 +1,351 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-/* ─── theme detection ─────────────────────────────────────────────────────── */
-function useTheme() {
-  const get = () =>
-    document.documentElement.classList.contains("dark") ||
-    document.documentElement.getAttribute("data-theme") === "dark" ||
-    document.body.classList.contains("dark");
-  const [dark, setDark] = useState(get);
-  useEffect(() => {
-    const obs = new MutationObserver(() => setDark(get()));
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class","data-theme"] });
-    obs.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-    return () => obs.disconnect();
-  }, []);
-  return dark;
-}
+/* ═══════════════════════════════════════════════════════
+   POKHREL SERVICES — AUTHENTIC REVIEWS PAGE
+   Dashboard / Feed Layout (Trustpilot / Platform Style)
+   ═══════════════════════════════════════════════════════ */
 
-/* ─── terminal log ────────────────────────────────────────────────────────── */
-const LOG_LINES = [
-  { delay: 0,    text: "> Initialising reviews module…",        color: "#94a3b8" },
-  { delay: 900,  text: "> Loading rating engine…       [OK]",   color: "#22d3ee" },
-  { delay: 1800, text: "> Fetching user profiles…      [OK]",   color: "#22d3ee" },
-  { delay: 2700, text: "> Building comment threads…    [··]",   color: "#fbbf24" },
-  { delay: 3600, text: "> Compiling star-score widget… [··]",   color: "#fbbf24" },
-  { delay: 4500, text: "> ETA: coming soon ✦",                  color: "#f97316" },
+const LS_KEY = "pokhrel_reviews_v1";
+
+const SEED = [
+  { id:"s1", name:"Rahul Sharma",    initials:"RS", rating:5, service:"Web Development",  verified:true,  helpful:9,  date:"2025-02-18", title:"Outstanding work", text:"Clean architecture and very professional delivery. Every pixel was exactly what we asked for — and then some. Would rehire immediately." },
+  { id:"s2", name:"Ankit Verma",     initials:"AV", rating:4, service:"Full Stack App",   verified:true,  helpful:6,  date:"2025-01-30", title:"Great experience overall", text:"Great experience working with Pratik. Highly recommended! Communication was smooth and the final product exceeded our initial scope." },
+  { id:"s3", name:"Sneha Karki",     initials:"SK", rating:5, service:"AI Integration",   verified:true,  helpful:14, date:"2025-01-12", title:"Made our AI idea real", text:"We had a rough concept and turned it into a live product. The understanding of both ML pipelines and user-facing UX is rare. Incredibly patient through all our revisions." },
+  { id:"s4", name:"Rajan Tamang",    initials:"RT", rating:5, service:"UI/UX Design",     verified:false, helpful:4,  date:"2024-12-28", title:"Stunning redesign", text:"Our old site looked like it was built in 2010. The redesign is modern, fast and our bounce rate dropped by 40% in the first month. Remarkable turnaround." },
+  { id:"s5", name:"Priya Shrestha",  initials:"PS", rating:5, service:"API Development",  verified:true,  helpful:11, date:"2024-12-05", title:"Production-ready from day one", text:"Clean REST APIs, full Swagger docs, proper error handling and rate limiting. Our backend team integrated with zero friction. This is how APIs should be delivered." },
+  { id:"s6", name:"Bikash Lama",     initials:"BL", rating:4, service:"Automation",       verified:true,  helpful:3,  date:"2024-11-20", title:"Saved us 30 hours a week", text:"The automation scripts eliminated an entire workflow our team was doing manually. ROI was visible within the first week of deployment." },
+  { id:"s7", name:"Arjun Maharjan",  initials:"AM", rating:5, service:"Machine Learning", verified:true,  helpful:17, date:"2024-11-03", title:"Forecasting accuracy jumped 26%", text:"Custom ML pipeline for retail demand forecasting. Accuracy went from 61% to 87%. Every technical decision was explained clearly, even to our non-technical management." },
 ];
 
-function Terminal({ dark }) {
-  const [visible, setVisible] = useState([]);
-  useEffect(() => {
-    setVisible([]);
-    const timers = LOG_LINES.map((l, i) =>
-      setTimeout(() => setVisible(v => [...v, i]), l.delay)
-    );
-    return () => timers.forEach(clearTimeout);
-  }, []);
+const SERVICES = [
+  "Web Development","Full Stack App","UI/UX Design",
+  "AI Integration","API Development","Machine Learning",
+  "Mobile App","Automation","Other",
+];
 
-  const bg  = dark ? "rgba(0,0,0,0.45)" : "rgba(15,23,42,0.90)";
-  const bar = dark ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.08)";
+const AVATAR_PALETTES = [
+  ["#3b82f6","#1e3a8a"],["#8b5cf6","#4c1d95"],["#10b981","#064e3b"],
+  ["#f59e0b","#78350f"],["#ec4899","#831843"],["#06b6d4","#164e63"],
+];
 
-  return (
-    <div style={{
-      width:"100%", borderRadius:12, overflow:"hidden",
-      background: bg,
-      backdropFilter:"blur(12px)", WebkitBackdropFilter:"blur(12px)",
-      border: dark ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(0,0,0,0.25)",
-      fontFamily:"'IBM Plex Mono', monospace", fontSize:11,
-    }}>
-      <div style={{
-        display:"flex", alignItems:"center", gap:6,
-        padding:"8px 14px", background: bar,
-        borderBottom: "1px solid rgba(255,255,255,0.07)",
-      }}>
-        {["#ef4444","#fbbf24","#22c55e"].map(c=>(
-          <span key={c} style={{ width:9, height:9, borderRadius:"50%", background:c, display:"inline-block" }}/>
-        ))}
-        <span style={{ marginLeft:6, color:"rgba(255,255,255,0.35)", fontSize:10 }}>reviews — build.log</span>
-      </div>
-      <div style={{ padding:"14px 16px", minHeight:120, display:"flex", flexDirection:"column", gap:6 }}>
-        {LOG_LINES.map((l,i) => (
-          <div key={i} style={{
-            color: visible.includes(i) ? l.color : "transparent",
-            transition:"color 0.4s ease",
-            display:"flex", alignItems:"center", gap:8,
-          }}>
-            {visible.includes(i) && i === LOG_LINES.length - 1 && (
-              <span style={{ display:"inline-block", width:7, height:7, borderRadius:"50%",
-                background:"#f97316", animation:"blink 1s step-end infinite" }}/>
-            )}
-            <span>{l.text}</span>
-          </div>
-        ))}
-        <span style={{ width:8, height:14, background:"#22d3ee",
-          display:"inline-block", animation:"blink 1s step-end infinite", marginTop:2 }}/>
-      </div>
-    </div>
-  );
+function getPalette(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = str.charCodeAt(i) + ((h << 5) - h);
+  return AVATAR_PALETTES[Math.abs(h) % AVATAR_PALETTES.length];
 }
 
-/* ─── progress ring ───────────────────────────────────────────────────────── */
-function RingProgress({ dark }) {
-  const [pct, setPct] = useState(0);
-  useEffect(() => {
-    let p = 0;
-    const t = setInterval(() => { p = p < 68 ? p + 0.3 : 0; setPct(p); }, 40);
-    return () => clearInterval(t);
-  }, []);
-
-  const R = 52, C = 2 * Math.PI * R;
-  const stroke = dark ? "#22d3ee" : "#f97316";
-  const glow   = dark ? "drop-shadow(0 0 6px #22d3ee)" : "drop-shadow(0 0 4px #f97316)";
-
+/* ─── Shared Components ─────────────────────────────── */
+function Star({ on, size = 16, onClick, onEnter }) {
   return (
-    <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
-      <svg width="130" height="130" style={{ filter: glow }}>
-        <circle cx="65" cy="65" r={R} fill="none"
-          stroke={dark?"rgba(255,255,255,0.07)":"rgba(0,0,0,0.08)"} strokeWidth="7"/>
-        <circle cx="65" cy="65" r={R} fill="none"
-          stroke={stroke} strokeWidth="7" strokeLinecap="round"
-          strokeDasharray={C} strokeDashoffset={C - (C * pct / 100)}
-          transform="rotate(-90 65 65)"
-          style={{ transition:"stroke-dashoffset 0.04s linear" }}/>
-        <text x="65" y="60" textAnchor="middle"
-          fill={dark?"#f1f5f9":"#1e293b"}
-          fontFamily="'Bebas Neue', sans-serif" fontSize="26" letterSpacing="1">
-          {pct.toFixed(0)}%
-        </text>
-        <text x="65" y="76" textAnchor="middle"
-          fill={dark?"#64748b":"#94a3b8"}
-          fontFamily="'IBM Plex Mono', monospace" fontSize="9">COMPLETE</text>
-      </svg>
-    </div>
-  );
-}
-
-/* ─── construction scene ──────────────────────────────────────────────────── */
-function Scene({ dark }) {
-  const sky    = dark ? "transparent" : "#dbeafe";
-  const ground = dark ? "rgba(30,41,59,0.6)" : "#fef3c7";
-  const wall1  = dark ? "#1e40af" : "#fb923c";
-  const wall2  = dark ? "#1d4ed8" : "#fdba74";
-  const scaffC = dark ? "#22d3ee" : "#92400e";
-  const plankC = dark ? "#0891b2" : "#b45309";
-
-  return (
-    <svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg"
-      style={{ width:"100%", display:"block", borderRadius:10 }}>
-      <rect width="480" height="260" fill={sky} rx="10"/>
-      {dark && Array.from({length:9},(_,i)=>(
-        <line key={`vg${i}`} x1={i*60} y1="0" x2={i*60} y2="260"
-          stroke="rgba(34,211,238,0.06)" strokeWidth="1"/>
-      ))}
-      {dark && Array.from({length:5},(_,i)=>(
-        <line key={`hg${i}`} x1="0" y1={i*65} x2="480" y2={i*65}
-          stroke="rgba(34,211,238,0.06)" strokeWidth="1"/>
-      ))}
-      {dark && [[30,20],[90,15],[180,30],[280,12],[370,22],[440,8],[60,50],[200,45],[330,48],[420,40]].map(([x,y],i)=>(
-        <circle key={i} cx={x} cy={y} r="1.4" fill="#e2e8f0" opacity="0.7">
-          <animate attributeName="opacity" values="0.7;0.2;0.7"
-            dur={`${1.4+i*0.25}s`} repeatCount="indefinite"/>
-        </circle>
-      ))}
-      {dark && <>
-        <circle cx="410" cy="38" r="22" fill="#e2e8f0" opacity="0.92"/>
-        <circle cx="422" cy="30" r="17" fill="#0f172a"/>
-      </>}
-      {!dark && <>
-        <circle cx="410" cy="38" r="28" fill="#fbbf24" opacity="0.9">
-          <animate attributeName="r" values="28;30;28" dur="4s" repeatCount="indefinite"/>
-        </circle>
-        {[0,40,80,120,160,200,240,280,320].map((d,i)=>(
-          <line key={i}
-            x1={410+35*Math.cos(d*Math.PI/180)} y1={38+35*Math.sin(d*Math.PI/180)}
-            x2={410+44*Math.cos(d*Math.PI/180)} y2={38+44*Math.sin(d*Math.PI/180)}
-            stroke="#fcd34d" strokeWidth="2.5" strokeLinecap="round"/>
-        ))}
-      </>}
-      {!dark && <>
-        <g opacity="0.85">
-          <ellipse cx="80" cy="70" rx="36" ry="18" fill="white"/>
-          <ellipse cx="102" cy="62" rx="26" ry="16" fill="white"/>
-          <ellipse cx="60" cy="65" rx="20" ry="13" fill="white"/>
-          <animateTransform attributeName="transform" type="translate" values="0 0;7 0;0 0" dur="7s" repeatCount="indefinite"/>
-        </g>
-        <g opacity="0.75">
-          <ellipse cx="300" cy="50" rx="40" ry="19" fill="white"/>
-          <ellipse cx="328" cy="42" rx="28" ry="17" fill="white"/>
-          <ellipse cx="276" cy="47" rx="22" ry="13" fill="white"/>
-          <animateTransform attributeName="transform" type="translate" values="0 0;-9 0;0 0" dur="9s" repeatCount="indefinite"/>
-        </g>
-      </>}
-      {dark && <ellipse cx="240" cy="170" rx="110" ry="16"
-        fill="none" stroke="rgba(34,211,238,0.18)" strokeWidth="8"
-        style={{filter:"blur(3px)"}}/>}
-      {/* scaffolding */}
-      <rect x="130" y="68" width="7" height="122" fill={scaffC} rx="2"/>
-      <rect x="220" y="55" width="7" height="135" fill={scaffC} rx="2"/>
-      <rect x="310" y="68" width="7" height="122" fill={scaffC} rx="2"/>
-      <rect x="130" y="76" width="187" height="7" fill={plankC} rx="2"/>
-      <rect x="130" y="120" width="187" height="7" fill={plankC} rx="2"/>
-      <rect x="130" y="164" width="187" height="7" fill={plankC} rx="2"/>
-      <line x1="137" y1="76" x2="224" y2="127" stroke={scaffC} strokeWidth="2.5" opacity="0.7"/>
-      <line x1="227" y1="76" x2="314" y2="127" stroke={scaffC} strokeWidth="2.5" opacity="0.7"/>
-      <line x1="227" y1="127" x2="137" y2="171" stroke={scaffC} strokeWidth="2.5" opacity="0.7"/>
-      <line x1="317" y1="127" x2="227" y2="171" stroke={scaffC} strokeWidth="2.5" opacity="0.7"/>
-      {/* wall */}
-      {[0,1,2,3,4,5].flatMap(row =>
-        [0,1,2,3,4].map(col => {
-          const x = 133 + col*36 + (row%2)*18;
-          const y = 188 - row*18;
-          if (x + 32 > 316) return null;
-          const shade = row < 2 ? wall1 : (row < 4 ? wall2 : (dark?"#3b82f6":"#fed7aa"));
-          return <rect key={`${row}-${col}`} x={x} y={y} width="32" height="15"
-            fill={shade} stroke={dark?"rgba(0,0,0,0.4)":"rgba(255,255,255,0.5)"}
-            strokeWidth="1.2" rx="2"/>;
-        })
-      )}
-      {[0,1,2].map(col => {
-        const x = 133 + col*36 + 18;
-        if (x + 32 > 316) return null;
-        return <rect key={col} x={x} y={90} width="32" height="15"
-          fill={dark?"#1e40af":"#fb923c"} stroke={dark?"rgba(0,0,0,0.3)":"rgba(255,255,255,0.4)"}
-          strokeWidth="1.2" rx="2" opacity="0.45"/>;
-      })}
-      {/* crane */}
-      <rect x="316" y="40" width="7" height="152" fill={dark?"#475569":"#78716c"} rx="2"/>
-      <rect x="316" y="40" width="72" height="6" fill={dark?"#64748b":"#a8a29e"} rx="2"/>
-      <line x1="376" y1="46" x2="376" y2="88" stroke={dark?"#94a3b8":"#78716c"} strokeWidth="1.8">
-        <animate attributeName="y2" values="88;102;88" dur="1.8s" repeatCount="indefinite"/>
-      </line>
-      <g>
-        <animate attributeName="transform" values="translate(0,0);translate(0,14);translate(0,0)" dur="1.8s" repeatCount="indefinite"/>
-        <rect x="368" y="84" width="16" height="11" fill={dark?"#22d3ee":"#ef4444"} rx="2"/>
-      </g>
-      {/* ground */}
-      <rect y="200" width="480" height="60" fill={ground}/>
-      <rect y="200" width="480" height="8" fill={dark?"rgba(34,211,238,0.15)":"rgba(180,130,60,0.4)"}/>
-      {[0,55,110,165,220,275,330,385,440].map((x,i)=>(
-        <rect key={i} x={x+8} y="226" width="30" height="6"
-          fill={dark?"rgba(34,211,238,0.2)":"rgba(203,213,225,0.7)"} rx="2"/>
-      ))}
-      {/* worker 1 */}
-      <g>
-        <rect x="154" y="148" width="8" height="18" fill={dark?"#1e3a5f":"#1e40af"} rx="3"/>
-        <rect x="164" y="148" width="8" height="18" fill={dark?"#1e3a5f":"#1e40af"} rx="3"/>
-        <rect x="150" y="124" width="22" height="24" fill="#f97316" rx="4"/>
-        <rect x="153" y="130" width="7" height="7" fill="rgba(0,0,0,0.2)" rx="2"/>
-        <circle cx="161" cy="117" r="10" fill="#fde68a"/>
-        <circle cx="157" cy="116" r="1.8" fill="#1e293b"/>
-        <circle cx="165" cy="116" r="1.8" fill="#1e293b"/>
-        <path d="M 157 121 Q 161 124 165 121" stroke="#92400e" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-        <ellipse cx="161" cy="109" rx="13" ry="6" fill="#facc15"/>
-        <rect x="148" y="107" width="26" height="6" fill="#facc15" rx="3"/>
-        <line x1="172" y1="132" x2="187" y2="124" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round">
-          <animate attributeName="x2" values="187;192;187" dur="0.55s" repeatCount="indefinite"/>
-          <animate attributeName="y2" values="124;119;124" dur="0.55s" repeatCount="indefinite"/>
-        </line>
-        <rect x="186" y="120" width="12" height="5" fill={dark?"#94a3b8":"#6b7280"} rx="1.5">
-          <animate attributeName="x" values="186;191;186" dur="0.55s" repeatCount="indefinite"/>
-          <animate attributeName="y" values="120;115;120" dur="0.55s" repeatCount="indefinite"/>
-        </rect>
-        <line x1="150" y1="132" x2="138" y2="128" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round"/>
-      </g>
-      {/* worker 2 */}
-      <g>
-        <rect x="255" y="194" width="8" height="16" fill={dark?"#1e3a5f":"#1e40af"} rx="3"/>
-        <rect x="265" y="194" width="8" height="16" fill={dark?"#1e3a5f":"#1e40af"} rx="3"/>
-        <rect x="251" y="171" width="22" height="23" fill={dark?"#10b981":"#059669"} rx="4"/>
-        <circle cx="262" cy="163" r="10" fill="#fde68a"/>
-        <circle cx="258" cy="162" r="1.8" fill="#1e293b"/>
-        <circle cx="266" cy="162" r="1.8" fill="#1e293b"/>
-        <ellipse cx="262" cy="155" rx="13" ry="6" fill="#f87171"/>
-        <rect x="249" y="153" width="26" height="6" fill="#f87171" rx="3"/>
-        <line x1="273" y1="180" x2="288" y2="172" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round">
-          <animate attributeName="y2" values="172;166;172" dur="0.85s" repeatCount="indefinite"/>
-          <animate attributeName="x2" values="288;292;288" dur="0.85s" repeatCount="indefinite"/>
-        </line>
-        <rect x="286" y="167" width="14" height="9" fill={dark?"#a78bfa":"#7c3aed"} rx="3">
-          <animate attributeName="y" values="167;161;167" dur="0.85s" repeatCount="indefinite"/>
-          <animate attributeName="x" values="286;290;286" dur="0.85s" repeatCount="indefinite"/>
-        </rect>
-        <circle cx="290" cy="190" r="2.5" fill={dark?"#a78bfa":"#7c3aed"} opacity="0.8">
-          <animate attributeName="cy" values="182;210;182" dur="1.4s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.8;0;0.8" dur="1.4s" repeatCount="indefinite"/>
-        </circle>
-        <line x1="251" y1="180" x2="239" y2="177" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round"/>
-      </g>
-      {/* worker 3 */}
-      <g>
-        <rect x="78" y="218" width="9" height="18" fill={dark?"#1e3a5f":"#1e40af"} rx="3">
-          <animate attributeName="y" values="218;215;218" dur="0.45s" repeatCount="indefinite"/>
-        </rect>
-        <rect x="89" y="218" width="9" height="18" fill={dark?"#1e3a5f":"#1e40af"} rx="3">
-          <animate attributeName="y" values="215;218;215" dur="0.45s" repeatCount="indefinite"/>
-        </rect>
-        <rect x="74" y="196" width="22" height="22" fill={dark?"#f97316":"#fb923c"} rx="4"/>
-        <circle cx="85" cy="188" r="10" fill="#fde68a"/>
-        <circle cx="81" cy="187" r="1.8" fill="#1e293b"/>
-        <circle cx="89" cy="187" r="1.8" fill="#1e293b"/>
-        <ellipse cx="85" cy="180" rx="13" ry="6" fill="#facc15"/>
-        <rect x="72" y="178" width="26" height="6" fill="#facc15" rx="3"/>
-        <line x1="74" y1="204" x2="60" y2="210" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round"/>
-        <line x1="96" y1="204" x2="112" y2="210" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round"/>
-        <rect x="58" y="205" width="56" height="9" fill={dark?"#475569":"#ef4444"} rx="2"/>
-        <rect x="60" y="196" width="52" height="9" fill={dark?"#64748b":"#f87171"} rx="2"/>
-        <rect x="62" y="187" width="48" height="9" fill={dark?"#7c8fa6":"#fca5a5"} rx="2"/>
-      </g>
-      {/* worker 4 */}
-      <g>
-        <rect x="400" y="236" width="5" height="16" fill={dark?"#475569":"#a16207"} rx="2"/>
-        <rect x="425" y="236" width="5" height="16" fill={dark?"#475569":"#a16207"} rx="2"/>
-        <rect x="396" y="234" width="38" height="6" fill={dark?"#64748b":"#ca8a04"} rx="2"/>
-        <rect x="403" y="224" width="8" height="12" fill="#3730a3" rx="3"/>
-        <rect x="414" y="224" width="8" height="12" fill="#3730a3" rx="3"/>
-        <rect x="400" y="200" width="22" height="24" fill={dark?"#818cf8":"#6366f1"} rx="4"/>
-        <circle cx="411" cy="192" r="10" fill="#fde68a"/>
-        <circle cx="407" cy="192" r="3.5" fill="none" stroke="#60a5fa" strokeWidth="1.8"/>
-        <circle cx="416" cy="192" r="3.5" fill="none" stroke="#60a5fa" strokeWidth="1.8"/>
-        <line x1="410.5" y1="192" x2="412.5" y2="192" stroke="#60a5fa" strokeWidth="1.4"/>
-        <ellipse cx="411" cy="184" rx="13" ry="6" fill="#22d3ee"/>
-        <rect x="398" y="182" width="26" height="6" fill="#22d3ee" rx="3"/>
-        <rect x="396" y="217" width="32" height="20" fill={dark?"#0f172a":"#e0f2fe"} rx="3"/>
-        <rect x="398" y="219" width="28" height="16" fill={dark?"#1e3a5f":"#93c5fd"} rx="2">
-          <animate attributeName="fill"
-            values={dark?"#1e3a5f;#0c4a6e;#1e3a5f":"#93c5fd;#60a5fa;#93c5fd"}
-            dur="2.2s" repeatCount="indefinite"/>
-        </rect>
-        <line x1="400" y1="210" x2="396" y2="220" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round"/>
-        <line x1="422" y1="210" x2="428" y2="220" stroke="#fde68a" strokeWidth="4.5" strokeLinecap="round"/>
-      </g>
-      {/* cones */}
-      {[[440,220],[462,224]].map(([cx,cy],i)=>(
-        <g key={i}>
-          <polygon points={`${cx},${cy} ${cx-10},${cy+28} ${cx+10},${cy+28}`} fill="#f97316"/>
-          <rect x={cx-12} y={cy+26} width="24" height="5" fill="#f97316" rx="1"/>
-          <rect x={cx-8}  y={cy+10} width="16" height="4" fill="white" opacity="0.7"/>
-        </g>
-      ))}
-      {/* wheelbarrow */}
-      <ellipse cx="38" cy="226" rx="11" ry="7"
-        fill={dark?"rgba(34,211,238,0.2)":"#d1fae5"}
-        stroke={dark?"#22d3ee":"#6ee7b7"} strokeWidth="1.5"/>
-      <rect x="16" y="216" width="44" height="13" fill={dark?"#334155":"#6ee7b7"} rx="4"/>
-      <circle cx="38" cy="234" r="7" fill={dark?"#475569":"#a7f3d0"}
-        stroke={dark?"#22d3ee":"#34d399"} strokeWidth="2"/>
-      <line x1="16" y1="222" x2="5" y2="218" stroke={dark?"#64748b":"#92400e"} strokeWidth="3" strokeLinecap="round"/>
-      <line x1="60" y1="222" x2="71" y2="218" stroke={dark?"#64748b":"#92400e"} strokeWidth="3" strokeLinecap="round"/>
-      {/* speech bubble */}
-      <rect x="176" y="90" width="76" height="24"
-        fill={dark?"rgba(15,23,42,0.88)":"white"}
-        stroke={dark?"rgba(34,211,238,0.5)":"#e5e7eb"} strokeWidth="1.5" rx="8"/>
-      <polygon points="185,114 178,122 198,114"
-        fill={dark?"rgba(15,23,42,0.88)":"white"}
-        stroke={dark?"rgba(34,211,238,0.5)":"#e5e7eb"} strokeWidth="1"/>
-      <polygon points="185,114 198,114 192,120"
-        fill={dark?"rgba(15,23,42,0.88)":"white"}/>
-      <text x="214" y="106" textAnchor="middle" fontSize="8.5"
-        fill={dark?"#22d3ee":"#6b7280"}
-        fontFamily="'IBM Plex Mono', monospace">Almost there!</text>
-      {/* caution tape */}
-      {Array.from({length:17},(_,i)=>(
-        <rect key={i} x={i*30} y="198" width="15" height="6"
-          fill={i%2===0?"#facc15":"#1c1917"} opacity="0.9"/>
-      ))}
+    <svg width={size} height={size} viewBox="0 0 20 20"
+      style={{ cursor: onClick ? "pointer" : "default", flexShrink: 0 }}
+      onClick={onClick} onMouseEnter={onEnter}
+    >
+      <polygon
+        points="10,1.5 12.35,7.24 18.54,7.64 13.97,11.6 15.45,17.64 10,14.25 4.55,17.64 6.03,11.6 1.46,7.64 7.65,7.24"
+        fill={on ? "#f59e0b" : "rgba(148, 163, 184, 0.2)"}
+        style={{ transition: "fill .2s ease" }}
+      />
     </svg>
   );
 }
 
-/* ─── stat pill ───────────────────────────────────────────────────────────── */
-function StatPill({ icon, label, value, dark, delay, accent }) {
+function StarRow({ val, size, interactive, onSet }) {
+  const [hov, setHov] = useState(0);
+  const show = interactive ? (hov || val) : val;
   return (
-    <div style={{
-      display:"flex", alignItems:"center", gap:10,
-      padding:"10px 16px", borderRadius:99,
-      background: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)",
-      border: `1px solid ${dark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.08)"}`,
-      animation:`fadeSlideUp 0.5s ease both`,
-      animationDelay:`${delay}ms`,
-    }}>
-      <span style={{ fontSize:16 }}>{icon}</span>
-      <div>
-        <div style={{
-          fontFamily:"'Bebas Neue', sans-serif",
-          fontSize:17, letterSpacing:"0.05em", lineHeight:1, color: accent,
-        }}>{value}</div>
-        <div style={{
-          fontFamily:"'IBM Plex Mono', monospace",
-          fontSize:9, letterSpacing:"0.08em",
-          color: dark?"#64748b":"#94a3b8", textTransform:"uppercase",
-        }}>{label}</div>
+    <div style={{ display:"flex", gap:3 }} onMouseLeave={() => interactive && setHov(0)}>
+      {[1,2,3,4,5].map(i => (
+        <Star key={i} size={size} on={show >= i}
+          onClick={interactive ? () => onSet(i) : null}
+          onEnter={interactive ? () => setHov(i) : null}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── Review Modal Form ─────────────────────────────── */
+function ReviewModal({ isOpen, onClose, onSubmit, isNight, T }) {
+  const [name, setName] = useState("");
+  const [service, setService] = useState("");
+  const [title, setTitle] = useState("");
+  const [text, setText] = useState("");
+  const [rating, setRating] = useState(0);
+  const [errs, setErrs] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  if (!isOpen) return null;
+
+  const validate = () => {
+    const e = {};
+    if (!rating) e.rating = "Rating required";
+    if (!name.trim()) e.name = "Name required";
+    if (!service) e.service = "Service required";
+    if (text.trim().length < 15) e.text = "Min 15 characters";
+    setErrs(e);
+    return !Object.keys(e).length;
+  };
+
+  const submit = () => {
+    if (!validate()) return;
+    setLoading(true);
+    setTimeout(() => {
+      onSubmit({ name: name.trim(), service, title: title.trim(), text: text.trim(), rating });
+      setLoading(false);
+      onClose();
+      // Reset form
+      setName(""); setService(""); setTitle(""); setText(""); setRating(0); setErrs({});
+    }, 1000);
+  };
+
+  const inpSt = { width:"100%", padding:"12px 14px", borderRadius:8, fontSize:14, background:T.inpBg, border:`1px solid ${T.inpBdr}`, color:T.titleColor, fontFamily:"inherit", outline:"none", boxSizing:"border-box" };
+
+  return (
+    <div style={{ position:"fixed", inset:0, zIndex:100, display:"flex", alignItems:"center", justifyContent:"center", padding:20, background:"rgba(0,0,0,0.6)", backdropFilter:"blur(4px)" }}>
+      <div style={{ background:T.cardBg, width:"100%", maxWidth:500, borderRadius:16, border:`1px solid ${T.border}`, padding:24, position:"relative", boxShadow:"0 20px 40px rgba(0,0,0,0.2)" }}>
+        
+        <button onClick={onClose} style={{ position:"absolute", top:20, right:20, background:"none", border:"none", color:T.subColor, cursor:"pointer", padding:4 }}>
+          <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+
+        <h3 style={{ margin:"0 0 8px", fontSize:20, color:T.titleColor }}>Write a Review</h3>
+        <p style={{ margin:"0 0 24px", fontSize:14, color:T.subColor }}>Share your experience with Pokhrel Services.</p>
+
+        <div style={{ marginBottom:20 }}>
+          <div style={{ fontSize:13, fontWeight:600, color:T.titleColor, marginBottom:8 }}>Rating *</div>
+          <StarRow val={rating} size={28} interactive onSet={setRating} />
+          {errs.rating && <div style={{ color:"#ef4444", fontSize:12, marginTop:4 }}>{errs.rating}</div>}
+        </div>
+
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:16 }}>
+          <div>
+            <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your Name *" style={{...inpSt, borderColor:errs.name?"#ef4444":T.inpBdr}} />
+          </div>
+          <div>
+            <select value={service} onChange={e=>setService(e.target.value)} style={{...inpSt, borderColor:errs.service?"#ef4444":T.inpBdr}}>
+              <option value="">Select Service *</option>
+              {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div style={{ marginBottom:16 }}>
+          <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Review Headline (Optional)" style={inpSt} />
+        </div>
+
+        <div style={{ marginBottom:24 }}>
+          <textarea value={text} onChange={e=>setText(e.target.value)} rows={4} placeholder="Describe your experience..." style={{...inpSt, resize:"vertical", borderColor:errs.text?"#ef4444":T.inpBdr}} />
+          {errs.text && <div style={{ color:"#ef4444", fontSize:12, marginTop:4 }}>{errs.text}</div>}
+        </div>
+
+        <button onClick={submit} disabled={loading} style={{ width:"100%", padding:14, borderRadius:8, background:"#3b82f6", color:"#fff", fontSize:15, fontWeight:600, border:"none", cursor:loading?"not-allowed":"pointer", opacity:loading?0.7:1 }}>
+          {loading ? "Publishing..." : "Submit Review"}
+        </button>
       </div>
     </div>
   );
 }
 
-/* ─── main export ─────────────────────────────────────────────────────────── */
-export default function Reviews() {
-  const dark   = useTheme();
-  const accent = dark ? "#22d3ee" : "#f97316";
-  const accent2= dark ? "#f97316" : "#0284c7";
-  const txt    = dark ? "#e2e8f0" : "#1e293b";
-  const muted  = dark ? "#64748b" : "#94a3b8";
-  const border = dark ? "rgba(255,255,255,0.09)" : "rgba(0,0,0,0.08)";
-  const cardBg = dark ? "rgba(255,255,255,0.04)" : "#ffffff";
-  const blur   = dark ? "blur(20px)" : "none";
+/* ═══════════════════════════════════════════════════════
+   MAIN COMPONENT 
+   ═══════════════════════════════════════════════════════ */
+export default function ReviewPage({ isNight = true }) {
+  const [reviews, setReviews] = useState(() => {
+    try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : SEED; } catch { return SEED; }
+  });
+
+  const [filter, setFilter] = useState("all");
+  const [sort, setSort] = useState("recent");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(reviews)); } catch {}
+  }, [reviews]);
+
+  const handleSubmit = useCallback((data) => {
+    const initials = data.name.split(" ").map(w => w[0].toUpperCase()).join("").slice(0, 2) || "??";
+    setReviews(prev => [{
+      id: "u" + Date.now(),
+      name: data.name, initials, service: data.service,
+      rating: data.rating, title: data.title, text: data.text,
+      date: new Date().toISOString().slice(0, 10),
+      verified: false, helpful: 0,
+    }, ...prev]);
+  }, []);
+
+  const handleHelpful = useCallback((id) => {
+    setReviews(prev => prev.map(r => r.id === id ? { ...r, helpful: (r.helpful || 0) + 1 } : r));
+  }, []);
+
+  /* ── Theme Tokens ── */
+  const T = isNight ? {
+    bg: "#020617",
+    cardBg: "#0f172a",
+    border: "#1e293b",
+    titleColor: "#f8fafc",
+    subColor: "#94a3b8",
+    textColor: "#cbd5e1",
+    inpBg: "#020617",
+    inpBdr: "#1e293b",
+    barBg: "#1e293b"
+  } : {
+    bg: "#f8fafc",
+    cardBg: "#ffffff",
+    border: "#e2e8f0",
+    titleColor: "#0f172a",
+    subColor: "#64748b",
+    textColor: "#334155",
+    inpBg: "#f8fafc",
+    inpBdr: "#e2e8f0",
+    barBg: "#e2e8f0"
+  };
+
+  const total = reviews.length;
+  const avg = total ? reviews.reduce((s, r) => s + r.rating, 0) / total : 0;
+  const dist = [5,4,3,2,1].map(s => ({ star:s, count:reviews.filter(r => r.rating === s).length }));
+
+  let visible = [...reviews];
+  if (filter !== "all") visible = visible.filter(r => r.rating === +filter);
+  if (sort === "recent") visible.sort((a,b) => new Date(b.date) - new Date(a.date));
+  if (sort === "top") visible.sort((a,b) => b.rating - a.rating || new Date(b.date) - new Date(a.date));
+  if (sort === "helpful") visible.sort((a,b) => (b.helpful||0) - (a.helpful||0));
 
   return (
-    <>
+    <div style={{ background: T.bg, minHeight: "100vh", fontFamily: "DM Sans, system-ui, sans-serif", color: T.textColor, padding: "40px 20px" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;700&family=Outfit:wght@400;500;600&display=swap');
-        @keyframes blink        { 0%,100%{opacity:1} 50%{opacity:0} }
-        @keyframes fadeSlideUp  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes floatY       { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
-        @keyframes ticker       { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-        @keyframes neonPulse    { 0%,100%{box-shadow:0 0 0 0 transparent} 50%{box-shadow:0 0 28px 4px rgba(34,211,238,0.16)} }
-        .reviews-root * { box-sizing:border-box; }
+        * { box-sizing: border-box; }
+        @media(max-width: 860px){
+          .rp-container { flex-direction: column!important; }
+          .rp-sidebar { width: 100%!important; position: static!important; }
+        }
       `}</style>
 
-      <div className="reviews-root" style={{
-        width:"100%", minHeight:"100%",
-        background: dark ? "transparent" : "#f1f5f9",
-        padding:"22px 14px 36px",
-        display:"flex", flexDirection:"column", alignItems:"center",
-        overflowX:"hidden",
-        fontFamily:"'Outfit', sans-serif",
-        transition:"background 0.3s",
-      }}>
+      <ReviewModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleSubmit} isNight={isNight} T={T} />
 
-        {/* page header */}
-        <div style={{
-          width:"100%", maxWidth:"min(700px,100%)",
-          display:"flex", alignItems:"center", justifyContent:"space-between",
-          marginBottom:18, paddingBottom:14,
-          borderBottom:`1px solid ${border}`,
-        }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{
-              width:32, height:32, borderRadius:8, fontSize:16,
-              background: dark?"rgba(34,211,238,0.12)":"rgba(249,115,22,0.1)",
-              display:"flex", alignItems:"center", justifyContent:"center",
-            }}>⭐</span>
-            <span style={{
-              fontFamily:"'Bebas Neue', sans-serif", fontSize:18, letterSpacing:"0.18em",
-              color: dark?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.35)",
-            }}>REVIEWS</span>
-          </div>
-          <div style={{
-            display:"flex", alignItems:"center", gap:7,
-            padding:"5px 12px", borderRadius:99,
-            background: dark?"rgba(249,115,22,0.12)":"rgba(249,115,22,0.10)",
-            border:`1px solid ${dark?"rgba(249,115,22,0.35)":"rgba(249,115,22,0.25)"}`,
-            animation:"floatY 2.8s ease-in-out infinite",
-          }}>
-            <span style={{
-              width:7, height:7, borderRadius:"50%", background:"#f97316",
-              display:"inline-block", animation:"blink 1.2s step-end infinite",
-            }}/>
-            <span style={{
-              fontFamily:"'IBM Plex Mono', monospace", fontSize:9, fontWeight:700,
-              letterSpacing:"0.12em", color:"#f97316",
-            }}>UNDER CONSTRUCTION</span>
-          </div>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        
+        {/* Simple Page Header */}
+        <div style={{ marginBottom: 32 }}>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: T.titleColor, margin: "0 0 8px" }}>Client Reviews</h1>
+          <p style={{ fontSize: 16, color: T.subColor, margin: 0 }}>Verified feedback for Pokhrel Services.</p>
         </div>
 
-        {/* main grid */}
-        <div style={{ width:"100%", maxWidth:"min(700px,100%)", display:"flex", flexDirection:"column", gap:12 }}>
-
-          {/* scene card */}
-          <div style={{
-            borderRadius:16, overflow:"hidden",
-            border:`1px solid ${border}`,
-            background: dark ? "rgba(255,255,255,0.03)" : "#ffffff",
-            backdropFilter: blur, WebkitBackdropFilter: blur,
-            animation: dark ? "neonPulse 4s ease-in-out infinite" : "none",
-            position:"relative",
-          }}>
-            <div style={{
-              height:5,
-              background:"repeating-linear-gradient(90deg,#f97316 0,#f97316 18px,#facc15 18px,#facc15 36px,#1c1917 36px,#1c1917 54px)",
-            }}/>
-            <div style={{
-              position:"absolute", top:16, left:14,
-              fontFamily:"'IBM Plex Mono', monospace",
-              fontSize:9, letterSpacing:"0.15em", fontWeight:700,
-              color: dark?"rgba(34,211,238,0.45)":"rgba(0,0,0,0.2)", textTransform:"uppercase",
-            }}>// construction_site.svg</div>
-            <div style={{ padding:"10px 10px 0" }}><Scene dark={dark}/></div>
-          </div>
-
-          {/* two-col row */}
-          <div style={{ display:"grid", gridTemplateColumns:"1fr auto", gap:12, alignItems:"start" }}>
-
-            {/* left col */}
-            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-
-              {/* headline card */}
-              <div style={{
-                padding:"20px 22px",
-                borderRadius:14,
-                background: cardBg,
-                border:`1px solid ${border}`,
-                backdropFilter: blur, WebkitBackdropFilter: blur,
-              }}>
-                <div style={{
-                  fontFamily:"'IBM Plex Mono', monospace", fontSize:9,
-                  letterSpacing:"0.2em", fontWeight:700, color: accent,
-                  textTransform:"uppercase", marginBottom:8,
-                }}>// coming_soon</div>
-                <h1 style={{
-                  fontFamily:"'Bebas Neue', sans-serif",
-                  fontSize:"clamp(32px,5.5vw,50px)",
-                  lineHeight:0.95, margin:"0 0 12px",
-                  color: txt, letterSpacing:"0.02em",
-                }}>
-                  Reviews<br/>
-                  <span style={{
-                    color: accent,
-                    textShadow: dark ? `0 0 22px ${accent}55` : "none",
-                  }}>Section</span>
-                </h1>
-                <p style={{
-                  fontSize:13, color: muted, lineHeight:1.75, margin:0,
-                  fontFamily:"'Outfit', sans-serif", maxWidth:310,
-                }}>
-                  Our team is actively building the reviews portal — star ratings, verified comments, and smart filtering coming soon.
-                </p>
+        <div className="rp-container" style={{ display: "flex", gap: 32, alignItems: "flex-start" }}>
+          
+          {/* ── LEFT SIDEBAR (Stats) ── */}
+          <div className="rp-sidebar" style={{ width: 320, flexShrink: 0, position: "sticky", top: 40 }}>
+            <div style={{ background: T.cardBg, borderRadius: 12, border: `1px solid ${T.border}`, padding: 24 }}>
+              
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+                <div style={{ fontSize: 48, fontWeight: 800, color: T.titleColor, lineHeight: 1 }}>{avg.toFixed(1)}</div>
+                <div>
+                  <StarRow val={Math.round(avg)} size={18} />
+                  <div style={{ fontSize: 13, color: T.subColor, marginTop: 4 }}>Based on {total} reviews</div>
+                </div>
               </div>
 
-              {/* stat pills */}
-              <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
-                <StatPill icon="⭐" label="Star Ratings" value="5.0"     dark={dark} accent={accent}  delay={0}/>
-                <StatPill icon="💬" label="Comments"     value="Soon"    dark={dark} accent={accent2} delay={80}/>
-                <StatPill icon="🏆" label="Top Picks"    value="Curated" dark={dark} accent={accent}  delay={160}/>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 32 }}>
+                {dist.map(d => {
+                  const pct = total ? Math.round((d.count / total) * 100) : 0;
+                  return (
+                    <div key={d.star} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 4, width: 35, fontSize: 13, fontWeight: 600 }}>
+                        {d.star} <Star on size={12} />
+                      </div>
+                      <div style={{ flex: 1, height: 8, borderRadius: 4, background: T.barBg, overflow: "hidden" }}>
+                        <div style={{ height: "100%", width: `${pct}%`, background: "#f59e0b", borderRadius: 4 }} />
+                      </div>
+                      <div style={{ width: 25, fontSize: 12, color: T.subColor, textAlign: "right" }}>{d.count}</div>
+                    </div>
+                  );
+                })}
               </div>
 
-              {/* terminal */}
-              <Terminal dark={dark}/>
-            </div>
-
-            {/* right col */}
-            <div style={{
-              display:"flex", flexDirection:"column",
-              alignItems:"center", gap:12,
-              padding:"20px 16px",
-              borderRadius:14,
-              background: cardBg,
-              border:`1px solid ${border}`,
-              backdropFilter: blur, WebkitBackdropFilter: blur,
-              minWidth:148,
-            }}>
-              <div style={{
-                fontFamily:"'IBM Plex Mono', monospace", fontSize:8,
-                letterSpacing:"0.2em", fontWeight:700,
-                color: muted, textTransform:"uppercase",
-              }}>BUILD PROGRESS</div>
-              <RingProgress dark={dark}/>
-              <div style={{
-                fontFamily:"'IBM Plex Mono', monospace", fontSize:9,
-                color: muted, textAlign:"center", lineHeight:1.65,
-              }}>Active<br/>Development</div>
-              <div style={{ width:"100%", height:1, background: border }}/>
-              <div style={{
-                fontFamily:"'IBM Plex Mono', monospace", fontSize:8,
-                letterSpacing:"0.15em", fontWeight:700,
-                color: muted, textTransform:"uppercase",
-              }}>GET NOTIFIED</div>
-              <input type="email" placeholder="your@email.com"
-                style={{
-                  width:"100%", padding:"8px 10px", borderRadius:8,
-                  border:`1px solid ${dark?"rgba(34,211,238,0.25)":"rgba(0,0,0,0.12)"}`,
-                  background: dark?"rgba(0,0,0,0.4)":"#f8fafc",
-                  color: txt, fontFamily:"'IBM Plex Mono', monospace",
-                  fontSize:10, outline:"none",
-                }}
-                onFocus={e => e.target.style.borderColor = accent}
-                onBlur={e  => e.target.style.borderColor = dark?"rgba(34,211,238,0.25)":"rgba(0,0,0,0.12)"}
-              />
-              <button
-                onClick={() => alert("You'll be notified! 🎉")}
-                style={{
-                  width:"100%", padding:"9px", borderRadius:8, border:"none",
-                  background:`linear-gradient(135deg,#f97316,${dark?"#fbbf24":"#0284c7"})`,
-                  color: dark?"#1c1917":"#ffffff",
-                  fontFamily:"'IBM Plex Mono', monospace",
-                  fontSize:10, fontWeight:700, cursor:"pointer", letterSpacing:"0.06em",
-                  transition:"opacity 0.2s, transform 0.15s",
-                }}
-                onMouseEnter={e=>{e.target.style.opacity="0.85";e.target.style.transform="scale(1.03)";}}
-                onMouseLeave={e=>{e.target.style.opacity="1";e.target.style.transform="scale(1)";}}
-              >NOTIFY ME →</button>
+              <button onClick={() => setIsModalOpen(true)} style={{ width: "100%", padding: "12px", borderRadius: 8, border: `1px solid ${T.border}`, background: "transparent", color: T.titleColor, fontSize: 15, fontWeight: 600, cursor: "pointer", transition: "background 0.2s" }}
+                onMouseEnter={e => e.currentTarget.style.background = isNight ? "#1e293b" : "#f1f5f9"}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                Write a Review
+              </button>
             </div>
           </div>
 
-          {/* ticker */}
-          <div style={{
-            borderRadius:10, overflow:"hidden",
-            border:`1px solid ${border}`,
-            background: dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)",
-            padding:"8px 0",
-          }}>
-            <div style={{
-              display:"inline-flex", gap:40,
-              animation:"ticker 22s linear infinite",
-              whiteSpace:"nowrap",
-              fontFamily:"'IBM Plex Mono', monospace",
-              fontSize:10, color: muted, letterSpacing:"0.05em",
-            }}>
-              {[...Array(2)].flatMap(()=>
-                ["★ Star Ratings","⬡ Verified Reviews","◈ Smart Filters",
-                 "▸ Comment Threads","◉ Score Analytics","▲ Reviewer Badges",
-                 "⬦ Under Development","✦ Launching Soon"].map((t,i)=>(
-                  <span key={`${t}${i}`} style={{ paddingRight:40 }}>{t}</span>
-                ))
-              )}
+          {/* ── RIGHT FEED (Reviews List) ── */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            
+            {/* Filters */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, marginBottom: 24, paddingBottom: 16, borderBottom: `1px solid ${T.border}` }}>
+              <div style={{ display: "flex", gap: 8 }}>
+                {["all", "5", "4", "3", "2", "1"].map(f => (
+                  <button key={f} onClick={() => setFilter(f)} style={{ padding: "6px 12px", borderRadius: 20, fontSize: 13, fontWeight: 600, border: `1px solid ${filter === f ? "#3b82f6" : T.border}`, background: filter === f ? "#3b82f6" : "transparent", color: filter === f ? "#fff" : T.subColor, cursor: "pointer" }}>
+                    {f === "all" ? "All" : `${f} Stars`}
+                  </button>
+                ))}
+              </div>
+              <select value={sort} onChange={e => setSort(e.target.value)} style={{ padding: "8px 12px", borderRadius: 8, fontSize: 14, background: T.cardBg, border: `1px solid ${T.border}`, color: T.titleColor, outline: "none", cursor: "pointer" }}>
+                <option value="recent">Most Recent</option>
+                <option value="top">Top Rated</option>
+                <option value="helpful">Most Helpful</option>
+              </select>
             </div>
-          </div>
-        </div>
 
-        {/* footer */}
-        <div style={{
-          marginTop:16,
-          fontFamily:"'IBM Plex Mono', monospace", fontSize:9,
-          letterSpacing:"0.1em",
-          color: dark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.2)",
-          display:"flex", alignItems:"center", gap:10,
-        }}>
-          <span>© {new Date().getFullYear()}</span>
-          <span style={{opacity:0.4}}>·</span>
-          <span>reviews_portal</span>
-          <span style={{opacity:0.4}}>·</span>
-          <span>ETA: TBD</span>
+            {/* List */}
+            {visible.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "60px 20px", color: T.subColor }}>No reviews found for this filter.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                {visible.map(r => {
+                  const pal = getPalette(r.initials);
+                  const d = new Date(r.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+                  
+                  return (
+                    <div key={r.id} style={{ background: T.cardBg, borderRadius: 12, border: `1px solid ${T.border}`, padding: 24 }}>
+                      
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                        <div style={{ display: "flex", gap: 16 }}>
+                          <div style={{ width: 44, height: 44, borderRadius: "50%", background: `linear-gradient(135deg,${pal[0]},${pal[1]})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, color: "#fff", flexShrink: 0 }}>
+                            {r.initials}
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 16, fontWeight: 700, color: T.titleColor, display: "flex", alignItems: "center", gap: 8 }}>
+                              {r.name}
+                              {r.verified && (
+                                <span style={{ fontSize: 11, background: isNight ? "rgba(16,185,129,0.15)" : "#d1fae5", color: "#10b981", padding: "2px 8px", borderRadius: 12, display: "flex", alignItems: "center", gap: 4 }}>
+                                  <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg> Verified
+                                </span>
+                              )}
+                            </div>
+                            <div style={{ fontSize: 13, color: T.subColor, marginTop: 4 }}>
+                              {r.service} • {d}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ marginBottom: 12 }}>
+                        <StarRow val={r.rating} size={15} />
+                      </div>
+                      
+                      {r.title && <h4 style={{ margin: "0 0 8px", fontSize: 16, color: T.titleColor }}>{r.title}</h4>}
+                      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: T.textColor }}>{r.text}</p>
+
+                      <div style={{ marginTop: 20, paddingTop: 16, borderTop: `1px solid ${T.border}`, display: "flex", alignItems: "center", gap: 12 }}>
+                        <span style={{ fontSize: 13, color: T.subColor }}>Helpful?</span>
+                        <button onClick={() => handleHelpful(r.id)} style={{ background: "transparent", border: `1px solid ${T.border}`, padding: "4px 12px", borderRadius: 20, fontSize: 13, fontWeight: 600, color: T.subColor, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+                          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                          {r.helpful || 0}
+                        </button>
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
