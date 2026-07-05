@@ -2,8 +2,8 @@ import { useState, useMemo } from 'react'
 import { useReveal } from '../hooks/useReveal'
 
 const projects = [
- [
- [
+ 
+ 
   {
     num: '01',
     category: 'E-commerce',
@@ -105,9 +105,8 @@ const projects = [
     status: 'Completed',
     year: '2024',
     link: 'https://my-recipes-pi.vercel.app/'
-  },
- ]
-]
+  }
+
 ]
 
 export default function Projects() {
