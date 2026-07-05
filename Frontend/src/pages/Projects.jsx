@@ -40,7 +40,7 @@ const projects = [
     tags: ['Python', 'AI/ML', 'Linear Regression Models', 'React', 'Fast API'],
     status: 'Active Development',
     year: '2026',
-    link: 'https://kavout-i38dqovas-prateekpokhrels-projects.vercel.app/' 
+    link: 'https://kavout-ltsf.vercel.app/' 
   },
   {
     num: '05',

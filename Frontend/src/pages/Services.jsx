@@ -57,39 +57,39 @@ const process = [
 ]
 
 const liveProjects = [
-  {
-    id: 'suis',
-    logo: suisImg,
-    title: 'SUIS',
-    subtitle: 'Smart University Intelligence System',
-    desc: 'AI-enabled university management platform designed to replace legacy SAP-based systems. It integrates academic, administrative, and operational modules into a single scalable platform with centralized data flow and real-time institutional analytics.',
-    tags: ['React.js', 'MySQL', 'AI','Supabase'],
-    status: 'Live',
-    url: 'https://suis-rouge.vercel.app/',
-    color: '#4f8ef7',
-  },
-  {
-    id: 'doko',
-    logo: dokoImg,
-    title: 'DokoXpress',
-    subtitle: 'Multi-Vendor E-commerce Platform',
-    desc: 'Comprehensive multi-vendor e-commerce platform built with a Java Spring Boot backend and React frontend. Features include product management, order processing, user authentication with JWT, and AWS deployment for scalability.',
-    tags: ['React.js', 'Java', 'Spring Boot', 'MySQL', 'JWT', 'AWS'],
-    status: 'Ongoing development',
-    url: '#',
-    color: '#4fc97f',
-  },
-  {
-    id: 'sega',
-    logo: segaImg,
-    title: 'SEGA',
-    subtitle: 'Structured Emergency Governance Architecture',
-    desc: 'Centralized emergency-governance infrastructure built within SUIS for incident reporting, hierarchical escalation, real-time monitoring, and safety compliance across institutions.',
-    tags: ['React.js', 'Python', 'Supabase', 'Fast API'],
-    status: 'Live',
-    url: '#',
-    color: '#f7874f',
-  },
+  // {
+  //   id: 'suis',
+  //   logo: suisImg,
+  //   title: 'SUIS',
+  //   subtitle: 'Smart University Intelligence System',
+  //   desc: 'AI-enabled university management platform designed to replace legacy SAP-based systems. It integrates academic, administrative, and operational modules into a single scalable platform with centralized data flow and real-time institutional analytics.',
+  //   tags: ['React.js', 'MySQL', 'AI','Supabase'],
+  //   status: 'Live',
+  //   url: 'https://suis-rouge.vercel.app/',
+  //   color: '#4f8ef7',
+  // },
+  // {
+  //   id: 'doko',
+  //   logo: dokoImg,
+  //   title: 'DokoXpress',
+  //   subtitle: 'Multi-Vendor E-commerce Platform',
+  //   desc: 'Comprehensive multi-vendor e-commerce platform built with a Java Spring Boot backend and React frontend. Features include product management, order processing, user authentication with JWT, and AWS deployment for scalability.',
+  //   tags: ['React.js', 'Java', 'Spring Boot', 'MySQL', 'JWT', 'AWS'],
+  //   status: 'Ongoing development',
+  //   url: '#',
+  //   color: '#4fc97f',
+  // },
+  // {
+  //   id: 'sega',
+  //   logo: segaImg,
+  //   title: 'SEGA',
+  //   subtitle: 'Structured Emergency Governance Architecture',
+  //   desc: 'Centralized emergency-governance infrastructure built within SUIS for incident reporting, hierarchical escalation, real-time monitoring, and safety compliance across institutions.',
+  //   tags: ['React.js', 'Python', 'Supabase', 'Fast API'],
+  //   status: 'Live',
+  //   url: '#',
+  //   color: '#f7874f',
+  // },
   {
     id: 'myrecipes',
     logo: myrecipesImg,
@@ -109,20 +109,20 @@ const liveProjects = [
     desc: 'Time-series forecasting platform for NSE stocks generating predictive insights for 1-day, 15-day, and 30-day horizons with a built-in paper trading engine for strategy simulation.',
     tags: ['Python', 'TensorFlow', 'React.js', 'FastAPI'],
     status: 'Live',
-    url: 'https://kavout-i38dqovas-prateekpokhrels-projects.vercel.app/',
+    url: 'https://kavout-ltsf.vercel.app/',
     color: '#f7d44f',
   },
-  {
-    id: 'nagarsetu',
-    logo: nagarsetuImg,
-    title: 'NagarSetu',
-    subtitle: 'AI-Based Smart City Issue Solver',
-    desc: 'Citizens report civic issues via photo or text; an AI triage engine classifies, prioritises, and routes complaints to the right municipal department automatically.',
-    tags: ['Python', 'NLP', 'Supabase', 'React.js'],
-    status: 'Live',
-    url: 'https://agentic-city-problem-solver.vercel.app/',
-    color: '#b44ff7',
-  },
+  // {
+  //   id: 'nagarsetu',
+  //   logo: nagarsetuImg,
+  //   title: 'NagarSetu',
+  //   subtitle: 'AI-Based Smart City Issue Solver',
+  //   desc: 'Citizens report civic issues via photo or text; an AI triage engine classifies, prioritises, and routes complaints to the right municipal department automatically.',
+  //   tags: ['Python', 'NLP', 'Supabase', 'React.js'],
+  //   status: 'Live',
+  //   url: 'https://agentic-city-problem-solver.vercel.app/',
+  //   color: '#b44ff7',
+  // },
 ]
 
 const initialForm = {
@@ -516,8 +516,8 @@ export default function Services() {
 
         /* Email to YOU */
         await emailjs.send(
-          "service_7n28cf2",          // YOUR SERVICE ID
-          "template_44ywr21",   // TEMPLATE FOR YOU
+          "service_7n28cf2",          // My SERVICE ID
+          "template_44ywr21",   // TEMPLATE FOR me
           templateParams,
           "YqTrBf5LEM3Ijfn2b"         // PUBLIC KEY
         );
