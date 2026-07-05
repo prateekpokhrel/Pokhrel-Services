@@ -2,8 +2,41 @@ import { useState, useMemo } from 'react'
 import { useReveal } from '../hooks/useReveal'
 
 const projects = [
+ [
+ [
   {
     num: '01',
+    category: 'E-commerce',
+    title: 'DokoXpress - Multi-Vendor E-commerce Platform',
+    desc: 'Comprehensive multi-vendor e-commerce platform built with a Java Spring Boot backend and React frontend. Features include product management, order processing, user authentication with JWT, and AWS deployment for scalability.',
+    tags: ['Java', 'Spring Boot', 'React','Tailwind CSS', 'MySQL','JWT', 'AWS'],
+    status: 'Active Development',
+    year: '2026',
+    link: 'https://github.com/prateekpokhrel/DokoXpress'
+  },
+  {
+    num: '02',
+    category: 'Library Management System',
+    title: 'LMS Portal',
+    desc: 'A full-stack Library Management System designed to manage books, users, borrowing records, and admin operations. It provides a structured dashboard for librarians and users with features like book search, issue/return tracking, and role-based access control.',
+    tags: ['Java', 'Spring Boot', 'React', 'SQL', 'JWT'],
+    status: 'Completed',
+    year: '2026',
+    link: 'https://github.com/prateekpokhrel/Library-Management-System'
+  },
+  {
+    num: '03',
+    category: 'FinTech / AI',
+    title: 'Kavout - AI Stock Forecasting Platform',
+    desc: 'AI-powered time-series forecasting platform for the Indian stock market analyzing companies listed on NSE. Generates predictive insights for 1-day, 15-day, and 30-day horizons with a built-in paper trading engine for strategy simulation.',
+    tags: ['Python', 'AI/ML', 'Linear Regression Models', 'React', 'Fast API'],
+    status: 'Active Development',
+    year: '2026',
+    link: 'https://kavout-ltsf.vercel.app/' 
+  },
+
+  {
+    num: '04',
     category: 'EduTech',
     title: 'SUIS - Smart University Intelligence System',
     desc: 'AI-enabled university management platform designed to replace legacy SAP-based systems. It integrates academic, administrative, and operational modules into a single scalable platform with centralized data flow and real-time institutional analytics.',
@@ -13,37 +46,27 @@ const projects = [
     link:'https://suis-rouge.vercel.app/'
   },
   {
-    num: '02',
-    category: 'E-commerce',
-    title: 'DokoXpress - Multi-Vendor E-commerce Platform',
-    desc: 'Comprehensive multi-vendor e-commerce platform built with a Java Spring Boot backend and React frontend. Features include product management, order processing, user authentication with JWT, and AWS deployment for scalability.',
-    tags: ['Java', 'Spring Boot', 'React','Tailwind CSS', 'MySQL','JWT', 'AWS'],
-    status: 'Active Development',
-    year: '2026',
-    link: '#'
-  },
-  {
-    num: '03',
-    category: 'Emergency Infrastructure',
-    title: 'SEGA - Smart Emergency Governance Architecture',
-    desc: 'Centralized emergency-governance infrastructure built within SUIS for incident reporting, hierarchical escalation, real-time monitoring, and safety compliance across institutions.',
-    tags: ['Java', 'Spring Boot', 'REST APIs', 'MySQL'],
-    status: 'Developed & Deployed under SUIS',
-    year: '2025',
-    link: '#'
-  },
-  {
-    num: '04',
-    category: 'FinTech / AI',
-    title: 'Kavout - AI Stock Forecasting Platform',
-    desc: 'AI-powered time-series forecasting platform for the Indian stock market analyzing companies listed on NSE. Generates predictive insights for 1-day, 15-day, and 30-day horizons with a built-in paper trading engine for strategy simulation.',
-    tags: ['Python', 'AI/ML', 'Linear Regression Models', 'React', 'Fast API'],
-    status: 'Active Development',
-    year: '2026',
-    link: 'https://kavout-ltsf.vercel.app/' 
-  },
-  {
     num: '05',
+    category: 'AI Logistics Platform',
+    title: 'DeliverAI Guard',
+    desc: 'AI-powered delivery failure prediction and real-time logistics monitoring platform. It uses XGBoost-based machine learning, FastAPI inference engine, and WebSocket-based real-time tracking to predict delivery risks and monitor logistics operations for large-scale delivery systems.',
+    tags: ['React', 'Spring Boot', 'FastAPI', 'XGBoost', 'PostgreSQL', 'Docker'],
+    status: 'Completed',
+    year: '2025',
+    link: 'https://github.com/prateekpokhrel/DeliverAI-Guard'
+  },
+  {
+    num: '06',
+    category: 'AI Navigation & Intelligence System',
+    title: 'NaviQ',
+    desc: 'An AI-powered intelligent navigation and query system designed to provide smart contextual assistance, optimized search responses, and structured information retrieval using modern AI techniques. The system focuses on improving user interaction efficiency through intelligent ranking, response optimization, and scalable backend architecture.',
+    tags: ['Python', 'FastAPI', 'Machine Learning', 'NLP', 'React'],
+    status: 'Completed',
+    year: '2025',
+    link: 'https://github.com/prateekpokhrel/NaviQ'
+  },
+  {
+    num: '07',
     category: 'Civic Tech',
     title: 'AI Smart City Issue Solver',
     desc: 'AI-driven civic issue reporting platform where citizens can submit problems such as road damage, waste management, or electricity issues. The system categorizes issues using AI and routes them to the appropriate municipal department.',
@@ -53,7 +76,28 @@ const projects = [
     link: 'https://agentic-city-problem-solver.vercel.app/'
   },
   {
-    num: '06',
+    num: '08',
+    category: 'Enterprise Backend System',
+    title: 'aICE - AI Interaction Control Engine',
+    desc: 'Enterprise-grade Spring Boot microservice backend system designed for scalable AI-driven social platform architecture. It includes Redis-powered concurrency control, virality scoring, notification batching, nested threaded comments, real-time analytics, WebSocket updates, and JWT-based security.',
+    tags: ['Java', 'Spring Boot', 'Redis', 'PostgreSQL', 'WebSocket', 'Docker', 'React'],
+    status: 'Completed',
+    year: '2025',
+    link: 'https://github.com/prateekpokhrel/aICE'
+  },
+  {
+    num: '09',
+    category: 'Weather Forecasting Platform',
+    title: 'Atoms Weather Forecasting App',
+    desc: 'A modern weather forecasting application that provides real-time weather updates, location-based forecasts, and clean UI-based weather visualization. Built with API integration for live weather data and responsive frontend design.',
+    tags: ['React', 'JavaScript', 'Weather API', 'CSS', 'OpenWeather API'],
+    status: 'Completed',
+    year: '2025',
+    link: 'https://github.com/prateekpokhrel/atoms--Weather-Forecasting-App'
+  },
+
+  {
+    num: '10',
     category: 'Web Platform',
     title: 'MyRecipes - Recipe Recommender Platform',
     desc: 'Interactive recipe discovery platform allowing users to explore, save, and share cooking recipes. Features search filtering, personalized recipe collections, and a clean responsive UI.',
@@ -61,17 +105,9 @@ const projects = [
     status: 'Completed',
     year: '2024',
     link: 'https://my-recipes-pi.vercel.app/'
-  },
-  {
-    num: '07',
-    category: 'OTT Platform',
-    title: 'Neplix',
-    desc: 'OTT streaming platform designed to promote Nepali movies, series, and digital content. Features a modern React-based interface, backend APIs for content management, and a scalable architecture for streaming and user engagement.',
-    tags: ['Java', 'Spring Boot', 'React', 'SQL', 'Supabase'],
-    status: 'Completed',
-    year: '2024',
-    link: '#'
   }
+]
+]
 ]
 
 export default function Projects() {
