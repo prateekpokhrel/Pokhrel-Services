@@ -105,8 +105,8 @@ const projects = [
     status: 'Completed',
     year: '2024',
     link: 'https://my-recipes-pi.vercel.app/'
-  }
-]
+  },
+ ]
 ]
 ]
 
