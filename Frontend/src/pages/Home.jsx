@@ -41,7 +41,7 @@ const highlights = [
   { n: '11+',  l: 'Certs'       },
   { n: '20+',  l: 'GitHub Repos' },
   { n: '2+',  l: 'Internships' },
-  { n: '7.44',l: 'CGPA'        },
+  { n: '7.73',l: 'CGPA'        },
   { n: '2+',  l: 'Awards'   },
 ]
 
@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <div className="page-wrapper" style={{ padding: '0 52px 80px' }}>
 
-      {/* ── Hero ── */}
+      {/*  Hero  */}
       <div style={{
         minHeight: 'calc(100vh - 100px)',
         display: 'flex', flexDirection: 'column',
@@ -117,7 +117,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── Highlight stats ── */}
+      {/*  Highlight stats  */}
       <div style={{ height: 1, background: 'var(--bdr)', margin: '0 0 52px' }} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 14, marginBottom: 52 }}>
