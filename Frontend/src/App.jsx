@@ -90,7 +90,7 @@ export default function App() {
           <Route path="/certificates" element={<Certificates />} />
           <Route path="/projects"     element={<Projects />}     />
           <Route path="/contact"      element={<Contact />}      />
-          <Route path = "/reviews"      element={<Review />}      />
+          <Route path = "/review"      element={<Review />}      />
         </Routes>
       </div>
 
