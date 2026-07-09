@@ -4,14 +4,14 @@ const LS_KEY = "pokhrel_reviews_v2";
 const THEME_KEY = "pokhrel_theme";
 
 const SEED = [
-  { id:"s1", name:"Rihana Jika",   rating:5, service:"Web Development",  verified:true,  helpful:200,  date:"2025-02-18", title:"Outstanding work", text:"Clean architecture and very professional delivery. Every pixel was exactly what we asked for — and then some. Would rehire immediately." },
+  { id:"s1", name:"David Jika",   rating:5, service:"Web Development",  verified:true,  helpful:200,  date:"2025-02-18", title:"Outstanding work", text:"Clean architecture and very professional delivery. Every pixel was exactly what we asked for — and then some. Would rehire immediately." },
   { id:"s2", name:"Ankita Verma",    rating:4, service:"Full Stack App",   verified:true,  helpful:60,  date:"2025-01-30", title:"Great experience overall", text:"Great experience working with Pratik. Highly recommended! Communication was smooth and the final product exceeded our initial scope." },
-  { id:"s3", name:"Sandesh Kumar",    rating:5, service:"AI Integration",   verified:true,  helpful:14, date:"2025-01-12", title:"Made our AI idea real", text:"We had a rough concept and turned it into a live product. The understanding of both ML pipelines and user-facing UX is rare. Incredibly patient through all our revisions, and never once made us feel like a small client." },
+  { id:"s3", name:"Sandhya Sharma",    rating:5, service:"AI Integration",   verified:true,  helpful:14, date:"2025-01-12", title:"Made our AI idea real", text:"We had a rough concept and turned it into a live product. The understanding of both ML pipelines and user-facing UX is rare. Incredibly patient through all our revisions, and never once made us feel like a small client." },
   { id:"s4", name:"Rajan Tamang",   rating:5, service:"UI/UX Design",     verified:false, helpful:4,  date:"2024-12-28", title:"Stunning redesign", text:"Our old site looked like it was built in 2010. The redesign is modern, fast and our bounce rate dropped by 40% in the first month. Remarkable turnaround." },
-  { id:"s5", name:"Angella Max", rating:5, service:"API Development",  verified:true,  helpful:11, date:"2024-12-05", title:"Production-ready from day one", text:"Clean REST APIs, full Swagger docs, proper error handling and rate limiting. Our backend team integrated with zero friction. This is how APIs should be delivered." },
-  { id:"s6", name:"Bikash Lama",    rating:4, service:"Automation",       verified:true,  helpful:3,  date:"2024-11-20", title:"Saved us 30 hours a week", text:"The automation scripts eliminated an entire workflow our team was doing manually. ROI was visible within the first week of deployment." },
-  { id:"s7", name:"Arjun Maharjan", rating:5, service:"Machine Learning", verified:true,  helpful:17, date:"2024-11-03", title:"Forecasting accuracy jumped 26%", text:"Custom ML pipeline for retail demand forecasting. Accuracy went from 61% to 87%. Every technical decision was explained clearly, even to our non-technical management." },
-  { id:"s8", name:"Alex Jordan", rating:3, service:"Mobile App",       verified:true,  helpful:2,  date:"2024-10-14", title:"Good, with a few hiccups", text:"The app works well overall. There were a couple of rounds of revisions on the onboarding flow, but the team stayed responsive and got it right in the end." },
+  { id:"s5", name:"Alex Max", rating:5, service:"API Development",  verified:true,  helpful:11, date:"2024-12-05", title:"Production-ready from day one", text:"Clean REST APIs, full Swagger docs, proper error handling and rate limiting. Our backend team integrated with zero friction. This is how APIs should be delivered." },
+  { id:"s6", name:"Bikshya Lama",    rating:4, service:"Automation",       verified:true,  helpful:3,  date:"2024-11-20", title:"Saved us 30 hours a week", text:"The automation scripts eliminated an entire workflow our team was doing manually. ROI was visible within the first week of deployment." },
+  { id:"s7", name:"Arjuna Maharjan", rating:5, service:"Machine Learning", verified:true,  helpful:17, date:"2024-11-03", title:"Forecasting accuracy jumped 26%", text:"Custom ML pipeline for retail demand forecasting. Accuracy went from 61% to 87%. Every technical decision was explained clearly, even to our non-technical management." },
+  { id:"s8", name:"Tina Jordan", rating:3, service:"Mobile App",       verified:true,  helpful:2,  date:"2024-10-14", title:"Good, with a few hiccups", text:"The app works well overall. There were a couple of rounds of revisions on the onboarding flow, but the team stayed responsive and got it right in the end." },
 ];
 
 const SERVICES = [
@@ -38,6 +38,7 @@ const AVATAR_PALETTES = [
   ["#6366f1","#312e81"],["#8b5cf6","#4c1d95"],["#10b981","#064e3b"],
   ["#f59e0b","#78350f"],["#ec4899","#831843"],["#06b6d4","#164e63"],
 ];
+
 function getPalette(str) {
   return AVATAR_PALETTES[hashStr(str) % AVATAR_PALETTES.length];
 }
@@ -227,37 +228,90 @@ export default function ReviewPage({ isNight: isNightProp }) {
   const [filter, setFilter] = useState("all");
   const [sort, setSort] = useState("recent");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // 1. More robust theme initialization that checks for standard "dark" mode as well
   const [isNight, setIsNightState] = useState(() => {
     if (isNightProp !== undefined) return isNightProp;
-    try {
-      const saved = localStorage.getItem(THEME_KEY);
-      if (saved) return saved === "night";
-    } catch {}
-    if (typeof window !== "undefined" && window.matchMedia) {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem("theme");
+        if (saved) return saved === "night" || saved === "dark";
+        
+        // Check for standard dark mode DOM classes (Tailwind style)
+        if (document.documentElement.classList.contains("dark") || document.body.classList.contains("dark")) {
+          return true;
+        }
+      } catch {}
+      if (window.matchMedia) {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches;
+      }
     }
-    return true;
+    return true; // Default fallback
   });
 
+  // 2. Keep state synced if the prop specifically updates
   useEffect(() => {
     if (isNightProp !== undefined) setIsNightState(isNightProp);
   }, [isNightProp]);
 
+  // 3. Bulletproof global listener to catch side-effect toggles from the parent wrapper
   useEffect(() => {
-    if (isNightProp !== undefined) return; 
-    const syncFromStorage = () => {
+    const syncTheme = () => {
       try {
-        const saved = localStorage.getItem(THEME_KEY);
-        if (saved) setIsNightState(saved === "night");
+        // Fallback checks
+        const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem("theme");
+        if (saved) {
+          setIsNightState(saved === "night" || saved === "dark");
+          return;
+        }
+        
+        const isDarkDOM = document.documentElement.classList.contains("dark") || 
+                          document.body.classList.contains("dark") ||
+                          document.documentElement.getAttribute("data-theme") === "dark";
+        if (isDarkDOM) {
+          setIsNightState(true);
+          return;
+        }
+        
+        const isLightDOM = document.documentElement.classList.contains("light") || 
+                           document.body.classList.contains("light") ||
+                           document.documentElement.getAttribute("data-theme") === "light";
+        if (isLightDOM) {
+          setIsNightState(false);
+          return;
+        }
       } catch {}
     };
-    window.addEventListener("storage", syncFromStorage);
-    window.addEventListener("themechange", syncFromStorage);
-    return () => {
-      window.removeEventListener("storage", syncFromStorage);
-      window.removeEventListener("themechange", syncFromStorage);
+
+    // Listen to standard custom events and cross-tab storage changes
+    window.addEventListener("storage", syncTheme);
+    window.addEventListener("themechange", syncTheme);
+    window.addEventListener("toggle-theme", syncTheme);
+
+    // Mutation observer for catching direct class changes (highly common in React ecosystems)
+    const observer = new MutationObserver(syncTheme);
+    if (typeof document !== "undefined") {
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
+      observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    }
+
+    // Monkey-patch localStorage.setItem to instantly catch same-tab theme changes if no event is fired
+    const originalSetItem = localStorage.setItem;
+    localStorage.setItem = function(key, value) {
+      originalSetItem.apply(this, arguments);
+      if (key === THEME_KEY || key === "theme") {
+        syncTheme();
+      }
     };
-  }, [isNightProp]);
+
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+      window.removeEventListener("themechange", syncTheme);
+      window.removeEventListener("toggle-theme", syncTheme);
+      observer.disconnect();
+      localStorage.setItem = originalSetItem;
+    };
+  }, []);
 
   useEffect(() => {
     try { localStorage.setItem(LS_KEY, JSON.stringify(reviews)); } catch {}
