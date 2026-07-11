@@ -71,10 +71,10 @@ const socials = [
   { img: github,   label: 'GitHub',   href: 'https://github.com/prateekpokhrel'            },
   { img: linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/pokhrelpratik/'   },
   { img: emailImg, label: 'Email',    href: 'mailto:itspratikpok@email.com'                 },
-  { img: resume,   label: 'Resume',   href: 'https://drive.google.com/file/d/1C30h4ajmLIs_ziyLD-Wt5Dp-3p3PUYth/view?usp=sharing'                                   },
+  { img: resume,   label: 'Resume',   href: 'https://drive.google.com/file/d/10ol7vDDbs-SS9X07O-WaRghbCdB1vu4C/view?usp=sharing'},
 ]
 
-const stats = [['3rd','Year'],['4+','Projects'],['7.73','CGPA'],['10+','Certs']]
+const stats = [['3rd','Year'],['4+','Projects'],['7.73','CGPA'],['16+','Certs']]
 
 /* ─────────────────────────── HELPERS ─────────────────────────── */
 
