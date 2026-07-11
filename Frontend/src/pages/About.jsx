@@ -373,7 +373,7 @@ KIIT Deemed to be University
   I'm <strong style={{ color: 'var(--t1)' }}>Pratik Pokhrel</strong>, a Java Full Stack Developer
   and AI enthusiast pursuing Computer Science and Engineering at
   <strong style={{ color: 'var(--t1)' }}> KIIT Deemed to be University </strong>
-  (CGPA 7.44, 5th semester). I believe that
+  (CGPA 7.73, 6th semester(SCGPA 9.08)). I believe that
   <strong style={{ color: 'var(--t1)' }}> practical knowledge should lead theoretical learning</strong>.
   For me, real understanding comes from building systems, experimenting with ideas,
   and deploying solutions that work in real-world environments rather than existing
