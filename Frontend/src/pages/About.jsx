@@ -74,7 +74,7 @@ const socials = [
   { img: resume,   label: 'Resume',   href: 'https://drive.google.com/file/d/10ol7vDDbs-SS9X07O-WaRghbCdB1vu4C/view?usp=sharing'},
 ]
 
-const stats = [['3rd','Year'],['4+','Projects'],['7.73','CGPA'],['16+','Certs']]
+const stats = [['4th','Year'],['4+','Projects'],['7.73','CGPA'],['16+','Certs']]
 
 /* ─────────────────────────── HELPERS ─────────────────────────── */
 
