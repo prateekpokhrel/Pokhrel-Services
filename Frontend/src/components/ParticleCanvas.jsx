@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function ParticleCanvas({ isNight }) {
+export default function ParticleCanvas() {
   const ref = useRef();
 
   useEffect(() => {
@@ -18,24 +18,14 @@ export default function ParticleCanvas({ isNight }) {
     resize();
     window.addEventListener("resize", resize);
 
-    // 🎨 Color palettes
-    const nightColors = [
+    // 🎨 Dark-mode palette only
+    const palette = [
       [91, 141, 238],
       [168, 85, 247],
       [52, 211, 153],
       [250, 204, 21],
       [125, 211, 252],
     ];
-
-    const dayColors = [
-      [0, 150, 255],
-      [0, 200, 180],
-      [120, 100, 255],
-      [255, 150, 50],
-      [255, 90, 150],
-    ];
-
-    const palette = isNight ? nightColors : dayColors;
 
     // ⭐ Create particles
     for (let i = 0; i < 110; i++) {
@@ -111,7 +101,7 @@ export default function ParticleCanvas({ isNight }) {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animId);
     };
-  }, [isNight]);
+  }, []);
 
   return (
     <canvas

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
 const LS_KEY = "pokhrel_reviews_v2";
-const THEME_KEY = "pokhrel_theme";
 
 const SEED = [
   { id:"s1", name:"Rihana Jika",   rating:5, service:"Web Development",  verified:true,  helpful:200,  date:"2025-02-18", title:"Outstanding work", text:"Clean architecture and very professional delivery. Every pixel was exactly what we asked for — and then some. Would rehire immediately." },
@@ -38,6 +37,7 @@ const AVATAR_PALETTES = [
   ["#6366f1","#312e81"],["#8b5cf6","#4c1d95"],["#10b981","#064e3b"],
   ["#f59e0b","#78350f"],["#ec4899","#831843"],["#06b6d4","#164e63"],
 ];
+
 function getPalette(str) {
   return AVATAR_PALETTES[hashStr(str) % AVATAR_PALETTES.length];
 }
@@ -57,7 +57,7 @@ function Star({ on, size = 16, onClick, onEnter }) {
     >
       <polygon
         points="10,1.5 12.35,7.24 18.54,7.64 13.97,11.6 15.45,17.64 10,14.25 4.55,17.64 6.03,11.6 1.46,7.64 7.65,7.24"
-        fill={on ? "#f59e0b" : "rgba(148, 163, 184, 0.25)"}
+        fill={on ? "#f59e0b" : "var(--bdr)"}
         style={{ transition: "fill .2s ease" }}
       />
     </svg>
@@ -128,7 +128,7 @@ function ReviewText({ text, T }) {
   const shown = open || !long ? text : text.slice(0, 200).trimEnd() + "…";
   return (
     <>
-      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.65, color: T.textColor }}>{shown}</p>
+      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.65, color: T.textColor, wordBreak: "break-word" }}>{shown}</p>
       {long && (
         <button
           onClick={() => setOpen(o => !o)}
@@ -176,10 +176,10 @@ function ReviewModal({ isOpen, onClose, onSubmit, T }) {
   const inpSt = { width: "100%", padding: "12px 14px", borderRadius: 10, fontSize: 14, background: T.inpBg, border: `1px solid ${T.inpBdr}`, color: T.titleColor, fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "border-color .15s ease" };
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: "rgba(2,6,23,0.65)", backdropFilter: "blur(6px)" }}
+    <div style={{ position: "fixed", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div style={{ background: T.cardBg, width: "100%", maxWidth: 500, borderRadius: 18, border: `1px solid ${T.border}`, padding: 28, position: "relative", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", animation: "modalIn .25s cubic-bezier(.16,1,.3,1)" }}>
+      <div className="modal-card" style={{ background: T.cardBg, width: "100%", maxWidth: 500, maxHeight: "90vh", overflowY: "auto", borderRadius: 18, border: `1px solid ${T.border}`, padding: 28, position: "relative", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", animation: "modalIn .25s cubic-bezier(.16,1,.3,1)" }}>
 
         <button onClick={onClose} style={{ position: "absolute", top: 20, right: 20, background: "none", border: "none", color: T.subColor, cursor: "pointer", padding: 4 }}>
           <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -194,7 +194,7 @@ function ReviewModal({ isOpen, onClose, onSubmit, T }) {
           {errs.rating && <div style={{ color: "#ef4444", fontSize: 12, marginTop: 4 }}>{errs.rating}</div>}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+        <div className="modal-form-row">
           <input value={name} onChange={e => setName(e.target.value)} placeholder="Your name *" style={{ ...inpSt, borderColor: errs.name ? "#ef4444" : T.inpBdr }} />
           <select value={service} onChange={e => setService(e.target.value)} style={{ ...inpSt, borderColor: errs.service ? "#ef4444" : T.inpBdr }}>
             <option value="">Select service *</option>
@@ -211,7 +211,7 @@ function ReviewModal({ isOpen, onClose, onSubmit, T }) {
           {errs.text && <div style={{ color: "#ef4444", fontSize: 12, marginTop: 4 }}>{errs.text}</div>}
         </div>
 
-        <button onClick={submit} disabled={loading} style={{ width: "100%", padding: 14, borderRadius: 10, background: `linear-gradient(135deg, ${T.accent}, ${T.accent2})`, color: "#fff", fontSize: 15, fontWeight: 700, border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, boxShadow: `0 8px 20px ${T.accentShadow}` }}>
+        <button onClick={submit} disabled={loading} style={{ width: "100%", padding: 14, borderRadius: 10, background: `linear-gradient(135deg, ${T.accent}, ${T.accent2})`, color: "#fff", fontSize: 15, fontWeight: 700, border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, boxShadow: `0 8px 20px ${T.accentSoftBg}` }}>
           {loading ? "Publishing…" : "Submit review"}
         </button>
       </div>
@@ -219,7 +219,7 @@ function ReviewModal({ isOpen, onClose, onSubmit, T }) {
   );
 }
 
-export default function ReviewPage({ isNight: isNightProp }) {
+export default function ReviewPage() {
   const [reviews, setReviews] = useState(() => {
     try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : SEED; } catch { return SEED; }
   });
@@ -227,37 +227,6 @@ export default function ReviewPage({ isNight: isNightProp }) {
   const [filter, setFilter] = useState("all");
   const [sort, setSort] = useState("recent");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isNight, setIsNightState] = useState(() => {
-    if (isNightProp !== undefined) return isNightProp;
-    try {
-      const saved = localStorage.getItem(THEME_KEY);
-      if (saved) return saved === "night";
-    } catch {}
-    if (typeof window !== "undefined" && window.matchMedia) {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-    return true;
-  });
-
-  useEffect(() => {
-    if (isNightProp !== undefined) setIsNightState(isNightProp);
-  }, [isNightProp]);
-
-  useEffect(() => {
-    if (isNightProp !== undefined) return; 
-    const syncFromStorage = () => {
-      try {
-        const saved = localStorage.getItem(THEME_KEY);
-        if (saved) setIsNightState(saved === "night");
-      } catch {}
-    };
-    window.addEventListener("storage", syncFromStorage);
-    window.addEventListener("themechange", syncFromStorage);
-    return () => {
-      window.removeEventListener("storage", syncFromStorage);
-      window.removeEventListener("themechange", syncFromStorage);
-    };
-  }, [isNightProp]);
 
   useEffect(() => {
     try { localStorage.setItem(LS_KEY, JSON.stringify(reviews)); } catch {}
@@ -277,39 +246,20 @@ export default function ReviewPage({ isNight: isNightProp }) {
     setReviews(prev => prev.map(r => r.id === id ? { ...r, helpful: (r.helpful || 0) + 1 } : r));
   }, []);
 
-  /* ── Theme tokens ── */
-  const T = isNight ? {
-    bg: "#05070d",
-    bgGradient: "radial-gradient(1200px 600px at 10% -10%, rgba(99,102,241,0.12), transparent), radial-gradient(1000px 500px at 100% 0%, rgba(236,72,153,0.08), transparent)",
-    cardBg: "#0d1117",
-    cardBgAlt: "#111826",
-    border: "#1e2530",
-    titleColor: "#f8fafc",
-    subColor: "#8b95a7",
-    textColor: "#c9d1d9",
-    inpBg: "#0a0e16",
-    inpBdr: "#242b38",
-    barBg: "#1c232f",
-    accent: "#818cf8",
-    accent2: "#c084fc",
-    accentShadow: "rgba(99,102,241,0.35)",
-    accentSoftBg: "rgba(129,140,248,0.12)",
-  } : {
-    bg: "#f6f7fb",
-    bgGradient: "radial-gradient(1200px 600px at 10% -10%, rgba(99,102,241,0.06), transparent), radial-gradient(1000px 500px at 100% 0%, rgba(236,72,153,0.05), transparent)",
-    cardBg: "#ffffff",
-    cardBgAlt: "#f9fafc",
-    border: "#e6e8ef",
-    titleColor: "#0f172a",
-    subColor: "#64748b",
-    textColor: "#374151",
-    inpBg: "#f8fafc",
-    inpBdr: "#e2e8f0",
-    barBg: "#eef0f5",
-    accent: "#6366f1",
-    accent2: "#a855f7",
-    accentShadow: "rgba(99,102,241,0.2)",
-    accentSoftBg: "rgba(99,102,241,0.08)",
+  /* ── Theme tokens linked to global CSS variables ── */
+  const T = {
+    cardBg: "var(--surf)",
+    cardBgAlt: "var(--bg2)",
+    border: "var(--bdr)",
+    titleColor: "var(--t1)",
+    subColor: "var(--t3)",
+    textColor: "var(--t2)",
+    inpBg: "var(--bg)",
+    inpBdr: "var(--bdr)",
+    barBg: "var(--bdr)",
+    accent: "var(--p)",
+    accent2: "var(--p)",
+    accentSoftBg: "var(--pdim)",
   };
 
   const total = reviews.length;
@@ -328,24 +278,62 @@ export default function ReviewPage({ isNight: isNightProp }) {
   )}")`;
 
   return (
-    <div style={{ background: T.bg, backgroundImage: T.bgGradient, minHeight: "100vh", fontFamily: "'Inter', system-ui, sans-serif", color: T.textColor, padding: "40px 20px", transition: "background-color .3s ease, color .3s ease" }}>
+    <div className="page-wrapper">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
         * { box-sizing: border-box; }
-        ::selection { background: ${T.accent}; color: #fff; }
+        
         @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes modalIn { from { opacity: 0; transform: scale(.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes barFill { from { width: 0; } }
+        
+        /* Flawless Responsive Grid Architecture */
+        .rp-layout-grid {
+          display: grid;
+          grid-template-columns: 340px 1fr;
+          gap: 32px;
+          align-items: start;
+        }
+
+        .rp-stats-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+
+        .modal-form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+
+        .rp-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 12px;
+          flex-wrap: wrap; /* Prevents overlap on mobile */
+          margin-bottom: 16px;
+        }
+
         .rp-card { animation: cardIn .4s cubic-bezier(.16,1,.3,1) backwards; }
         .rp-chip { transition: all .15s ease; }
         .rp-chip:hover { transform: translateY(-1px); }
         .rp-select { appearance: none; -webkit-appearance: none; background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px !important; }
         .rp-helpful:hover { background: ${T.accentSoftBg} !important; border-color: ${T.accent} !important; color: ${T.accent} !important; }
         .rp-write-btn:hover { background: linear-gradient(135deg, ${T.accent}, ${T.accent2}) !important; color: #fff !important; border-color: transparent !important; }
-        @media(max-width: 860px){
-          .rp-container { flex-direction: column!important; }
-          .rp-sidebar { width: 100%!important; position: static!important; }
+        
+        /* Mobile Breakpoints */
+        @media(max-width: 1024px){
+          .rp-layout-grid { grid-template-columns: 1fr; }
+          .rp-sidebar { position: static !important; width: 100% !important; }
         }
+        @media(max-width: 600px){
+          .modal-form-row { grid-template-columns: 1fr; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .rp-card, .rp-card * { animation: none !important; transition: none !important; }
         }
@@ -355,21 +343,19 @@ export default function ReviewPage({ isNight: isNightProp }) {
 
       <div style={{ maxWidth: 1120, margin: "0 auto" }}>
 
-        {/* Header */}
+        {/* Header - integrated with standard margins */}
         <div style={{ marginBottom: 36 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.accent, marginBottom: 10 }}>
-            Pokhrel Services
-          </div>
           <h1 style={{ fontSize: 34, fontFamily: "Sora, sans-serif", fontWeight: 800, color: T.titleColor, margin: "0 0 8px", letterSpacing: "-0.01em" }}>
             Client reviews
           </h1>
           <p style={{ fontSize: 15.5, color: T.subColor, margin: 0 }}>Verified feedback, straight from the people we've delivered for.</p>
         </div>
 
-        <div className="rp-container" style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
+        {/* CSS Grid layout replaces inline flex block */}
+        <div className="rp-layout-grid">
 
           {/* ── LEFT SIDEBAR (Stats) ── */}
-          <div className="rp-sidebar" style={{ width: 320, flexShrink: 0, position: "sticky", top: 32 }}>
+          <div className="rp-sidebar" style={{ position: "sticky", top: 32 }}>
             <div style={{ background: T.cardBg, borderRadius: 16, border: `1px solid ${T.border}`, padding: 26, position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg, ${T.accent}, ${T.accent2})` }} />
 
@@ -381,12 +367,12 @@ export default function ReviewPage({ isNight: isNightProp }) {
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
-                <div style={{ flex: 1, background: T.cardBgAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "10px 12px" }}>
+              <div className="rp-stats-grid">
+                <div style={{ background: T.cardBgAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "12px" }}>
                   <div style={{ fontSize: 18, fontWeight: 800, color: T.titleColor, fontFamily: "Sora, sans-serif" }}>{verifiedPct}%</div>
                   <div style={{ fontSize: 11.5, color: T.subColor, marginTop: 2 }}>Verified clients</div>
                 </div>
-                <div style={{ flex: 1, background: T.cardBgAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "10px 12px" }}>
+                <div style={{ background: T.cardBgAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "12px" }}>
                   <div style={{ fontSize: 18, fontWeight: 800, color: T.titleColor, fontFamily: "Sora, sans-serif" }}>{dist[0].count + dist[1].count}</div>
                   <div style={{ fontSize: 11.5, color: T.subColor, marginTop: 2 }}>4★ & 5★ reviews</div>
                 </div>
@@ -421,10 +407,10 @@ export default function ReviewPage({ isNight: isNightProp }) {
           </div>
 
           {/* ── RIGHT FEED (Reviews List) ── */}
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ minWidth: 0 }}>
 
             {/* Filters */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14, marginBottom: 24, paddingBottom: 18, borderBottom: `1px solid ${T.border}` }}>
+            <div style={{ display: "flex", justifyItems: "stretch", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14, marginBottom: 24, paddingBottom: 18, borderBottom: `1px solid ${T.border}` }}>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {["all", "5", "4", "3", "2", "1"].map(f => {
                   const count = f === "all" ? total : dist.find(d => String(d.star) === f)?.count ?? 0;
@@ -446,7 +432,7 @@ export default function ReviewPage({ isNight: isNightProp }) {
                 className="rp-select"
                 value={sort}
                 onChange={e => setSort(e.target.value)}
-                style={{ padding: "9px 14px", borderRadius: 10, fontSize: 14, fontWeight: 600, background: `${T.cardBg} ${selectArrow(isNight ? "%23c9d1d9" : "%23374151")}`, border: `1px solid ${T.border}`, color: T.titleColor, outline: "none", cursor: "pointer" }}
+                style={{ padding: "9px 14px", borderRadius: 10, fontSize: 14, fontWeight: 600, background: `${T.cardBg} ${selectArrow("%23c9d1d9")}`, border: `1px solid ${T.border}`, color: T.titleColor, outline: "none", cursor: "pointer" }}
               >
                 <option value="recent">Most recent</option>
                 <option value="top">Top rated</option>
@@ -469,14 +455,14 @@ export default function ReviewPage({ isNight: isNightProp }) {
                       className="rp-card"
                       style={{ animationDelay: `${Math.min(i, 8) * 55}ms`, background: T.cardBg, borderRadius: 16, border: `1px solid ${T.border}`, padding: 24, transition: "border-color .2s ease, transform .2s ease" }}
                     >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, gap: 12 }}>
+                      <div className="rp-card-header">
                         <div style={{ display: "flex", gap: 14 }}>
                           <Avatar name={r.name} rating={r.rating} size={46} T={T} />
                           <div>
                             <div style={{ fontSize: 16, fontWeight: 700, color: T.titleColor, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                               {r.name}
                               {r.verified && (
-                                <span style={{ fontSize: 11, fontWeight: 700, background: isNight ? "rgba(16,185,129,0.15)" : "#d1fae5", color: "#10b981", padding: "3px 8px", borderRadius: 12, display: "flex", alignItems: "center", gap: 4 }}>
+                                <span style={{ fontSize: 11, fontWeight: 700, background: "rgba(16,185,129,0.15)", color: "#10b981", padding: "3px 8px", borderRadius: 12, display: "flex", alignItems: "center", gap: 4 }}>
                                   <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg>
                                   Verified
                                 </span>

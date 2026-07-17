@@ -38,81 +38,152 @@ function useLocation() {
   return loc
 }
 
-function useTheme() {
-  const [isLight, setIsLight] = useState(
-    () => document.documentElement.classList.contains('light')
-  )
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsLight(document.documentElement.classList.contains('light'))
-    })
-    observer.observe(document.documentElement, { attributeFilter: ['class'] })
-    return () => observer.disconnect()
-  }, [])
-  return isLight
-}
-
-const mono = { fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }
-
 export default function Topbar() {
   const { time, date } = useClock()
   const loc            = useLocation()
-  const isLight        = useTheme()
+  const isLight        = false
 
   return (
-    <div style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 50,
-      height: 44,
-      padding: '0 48px 0 120px',
+    <>
+      <style>{`
+        .topbar-wrapper {
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          column-gap: 16px;
+          row-gap: 12px;
+          
+          /* Matches the padding of .page-wrapper for perfect vertical alignment */
+          padding: 16px 52px; 
+          
+          /* Premium glassmorphism effect */
+          background: rgba(8, 10, 15, 0.75); 
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--bdr);
+          transition: padding 0.3s ease;
+        }
 
-      /* transparent background */
-      background: 'transparent',
+        .topbar-primary {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
 
-      borderBottom: '1px solid var(--bdr)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 18,
-      ...mono,
-      color: 'var(--t3)'
-    }}>
+        .topbar-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          animation: dotBlink 2.5s infinite ease-in-out;
+        }
 
-      {/* Live dot + time */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-        <div style={{
-          width: 5,
-          height: 5,
-          borderRadius: '50%',
-          background: isLight ? '#0f9e58' : '#3ddc84',
-          boxShadow: isLight
-            ? '0 0 6px rgba(15,158,88,0.5)'
-            : '0 0 6px rgba(61,220,132,0.6)',
-        }} />
-        <span style={{ color: 'var(--t2)' }}>{time}</span>
+        @keyframes dotBlink {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        .topbar-time {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--t1);
+          letter-spacing: 0.5px;
+        }
+
+        .topbar-meta {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 11px;
+          color: var(--t3);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .topbar-sep {
+          opacity: 0.4;
+        }
+
+        .topbar-loc {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 200px;
+        }
+
+        .topbar-badge {
+          margin-left: auto;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          padding: 6px 14px;
+          border-radius: 20px;
+          background: var(--pdim);
+          color: var(--p);
+          border: 1px solid rgba(91,141,238,0.2);
+          white-space: nowrap;
+        }
+
+        /* Responsive Breakpoints syncing with global layout */
+        @media (max-width: 1024px) {
+          .topbar-wrapper {
+            padding: 16px 30px;
+          }
+        }
+
+        @media (max-width: 600px) {
+          .topbar-wrapper {
+            padding: 16px 20px;
+          }
+          .topbar-meta {
+            display: none; /* Hides secondary metadata on small screens to prevent clutter */
+          }
+          .topbar-badge {
+            margin-left: 0; /* Allows badge to stack nicely if forced */
+          }
+        }
+      `}</style>
+
+      <div className={`topbar-wrapper${isLight ? ' topbar-light' : ''}`}>
+
+        {/* Group 1 — live dot + time */}
+        <div className="topbar-primary">
+          <span
+            className="topbar-dot"
+            aria-hidden="true"
+            style={{
+              background: isLight ? '#0f9e58' : '#3ddc84',
+              boxShadow: isLight
+                ? '0 0 8px rgba(15,158,88,0.5)'
+                : '0 0 8px rgba(61,220,132,0.6)',
+            }}
+          />
+          <span className="topbar-time">{time}</span>
+        </div>
+
+        {/* Group 2 — date + location */}
+        <div className="topbar-meta">
+          <span className="topbar-sep" aria-hidden="true">·</span>
+          <span className="topbar-date">{date}</span>
+          <span className="topbar-sep" aria-hidden="true">·</span>
+          <span className="topbar-loc" title={loc}>{loc}</span>
+        </div>
+
+        {/* Available badge
+        <div
+          className="topbar-badge"
+          style={{ borderColor: isLight ? 'rgba(42,82,201,0.2)' : 'rgba(91,141,238,0.2)' }}
+        >
+          Available for Work
+        </div> */}
+
       </div>
-
-      <span style={{ color: 'var(--bdr2)' }}>·</span>
-      <span style={{ color: 'var(--t2)' }}>{date}</span>
-      <span style={{ color: 'var(--bdr2)' }}>·</span>
-      <span style={{ color: 'var(--t3)' }}>{loc}</span>
-
-      {/* Available badge */}
-      <div style={{
-        marginLeft: 'auto',
-        padding: '3px 10px',
-        borderRadius: 4,
-        background: 'var(--pdim)',
-        color: 'var(--p)',
-        fontSize: 10,
-        fontWeight: 600,
-        letterSpacing: 0.5,
-        border: '1px solid',
-        borderColor: isLight ? 'rgba(42,82,201,0.2)' : 'transparent',
-      }}>
-        Available for Work
-      </div>
-
-    </div>
+    </>
   )
 }

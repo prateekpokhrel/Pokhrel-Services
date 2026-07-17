@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom'
-import { useState, useEffect } from 'react'
 
 import Sidebar        from './components/Sidebar'
 import Topbar         from './components/Topbar'
@@ -14,72 +13,23 @@ import Services     from './pages/Services'
 import Certificates from './pages/Certificates'
 import Projects     from './pages/Projects'
 import Contact      from './pages/Contact'
-import Review      from './pages/Review'
+import Review       from './pages/Review'
 
 export default function App() {
-  const [collapsed, setCollapsed] = useState(false)
-  const [isNight, setIsNight]     = useState(true)
-
-  // ── Restore saved theme preference on mount ──────────────
-  useEffect(() => {
-    const saved = localStorage.getItem('theme')
-    if (saved === 'light') {
-      setIsNight(false)
-    } else if (saved === 'dark') {
-      setIsNight(true)
-    } else {
-      // No saved pref → fall back to time-of-day
-      const h = new Date().getHours()
-      setIsNight(h < 6 || h >= 18)
-    }
-  }, [])
-
-  // ── Sync isNight → <html> class + localStorage ───────────
-  useEffect(() => {
-    const root = document.documentElement
-    if (isNight) {
-      root.classList.remove('light')
-      localStorage.setItem('theme', 'dark')
-    } else {
-      root.classList.add('light')
-      localStorage.setItem('theme', 'light')
-    }
-  }, [isNight])
-
-  const sw = collapsed ? 'var(--swc)' : 'var(--sw)'
-
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'var(--bg)' }}>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', position: 'relative' }}>
 
       {/* 🔵 Background Layer */}
-      <ParticleCanvas isNight={isNight} />
+      <ParticleCanvas />
 
       {/* 🔵 Glow Effect Layer */}
       <CursorGlow />
 
-      {/* 🔵 Sidebar */}
-      <Sidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed(v => !v)}
-        isNight={isNight}
-        onModeToggle={() => setIsNight(v => !v)}
-      />
+      {/* 🔵 Sidebar (Now purely CSS Responsive!) */}
+      <Sidebar />
 
-      {/* 🔵 Main Content */}
-      <div
-        id="main-scroll"
-        style={{
-          position: 'fixed',
-          left: sw,
-          top: 0,
-          right: 0,
-          bottom: 0,
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          transition: 'left 0.45s var(--ease)',
-          zIndex: 10,
-        }}
-      >
+      {/* 🔵 Main Content (Uses global CSS for perfect alignment) */}
+      <main className="main-content" id="main-scroll">
         <Topbar />
 
         <Routes>
@@ -90,9 +40,9 @@ export default function App() {
           <Route path="/certificates" element={<Certificates />} />
           <Route path="/projects"     element={<Projects />}     />
           <Route path="/contact"      element={<Contact />}      />
-          <Route path = "/review"      element={<Review />}      />
+          <Route path="/review"       element={<Review />}       />
         </Routes>
-      </div>
+      </main>
 
       {/* 🔵 Floating AI Assistant */}
       <AIOrb />

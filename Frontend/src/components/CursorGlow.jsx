@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function CursorGlow({ isNight }) {
+export default function CursorGlow() {
   const ref = useRef();
   const [visible, setVisible] = useState(true);
 
@@ -25,10 +25,7 @@ export default function CursorGlow({ isNight }) {
 
   if (!visible) return null;
 
-  // 🌗 Sync with theme
-  const glowColor = isNight
-    ? "rgba(91,141,238,0.06)"   // soft blue at night
-    : "rgba(60,200,255,0.05)";  // soft cyan in day ""
+  const glowColor = "rgba(91,141,238,0.06)";
 
   return (
     <div
