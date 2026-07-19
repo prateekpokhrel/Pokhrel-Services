@@ -449,7 +449,7 @@ export default function Services() {
               ))}
             </div>
               
-            <span className="project-launch-btn">Launch app →</span>
+            <span className="project-launch-btn">Launch app</span>
           </a>
         ))}
       </div>

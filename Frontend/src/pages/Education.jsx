@@ -33,7 +33,7 @@ const education = [
   },
   {
     id: 'sagarmatha-plus2',
-    institution: 'Sagarmatha Higher Secondary Boarding School',
+    institution: 'Sagarmatha Secondary Boarding School',
     subtitle: 'Nepal',
     degree: '+2 Science (Higher Secondary Education)',
     period: '2019 to 2021',
@@ -58,7 +58,7 @@ const education = [
   },
   {
     id: 'sagarmatha-10',
-    institution: 'Sagarmatha Higher Secondary Boarding School',
+    institution: 'Sagarmatha Secondary Boarding School',
     subtitle: 'Nepal',
     degree: 'Secondary Education - Upto 10th Standard',
     period: '2006 to 2019',

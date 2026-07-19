@@ -314,7 +314,7 @@ export default function Projects() {
             }
           }}
           >
-            View Project <span>→</span>
+            View Project
           </button>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
