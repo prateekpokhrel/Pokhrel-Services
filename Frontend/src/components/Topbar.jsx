@@ -89,7 +89,7 @@ export default function Topbar() {
           font-family: 'JetBrains Mono', monospace;
           font-size: 13px;
           font-weight: 700;
-          color: var(--t1);
+          color: white;
           letter-spacing: 0.5px;
         }
 
@@ -99,7 +99,7 @@ export default function Topbar() {
           gap: 8px;
           font-family: 'JetBrains Mono', monospace;
           font-size: 11px;
-          color: var(--t3);
+          color: white;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
