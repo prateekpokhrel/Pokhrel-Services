@@ -5,7 +5,7 @@ export default function CursorGlow() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    // ❌ Disable on mobile / touch devices
+    // Disable on mobile / touch devices
     if (window.matchMedia("(pointer: coarse)").matches) {
       setVisible(false);
       return;
@@ -40,7 +40,7 @@ export default function CursorGlow() {
         transform: "translate(-50%, -50%)",
         transition: "opacity 0.4s ease",
 
-        // 🌫 Smooth fade edges
+        // Smooth fade edges
         background: `radial-gradient(
           circle,
           ${glowColor} 0%,
@@ -48,7 +48,7 @@ export default function CursorGlow() {
           transparent 75%
         )`,
 
-        // 💓 Gentle pulse animation
+        // Gentle pulse animation
         animation: "cursorPulse 4s ease-in-out infinite",
       }}
     />
