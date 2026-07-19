@@ -47,6 +47,39 @@ const certs = [
     driveLink: 'https://drive.google.com/file/d/18b5ujD9CvWNI4HiRPlzfsFRTS2VaNmvS/preview'
   },
   {
+  icon: <i className="fa-brands fa-hackerrank" style={{ color: "#2ec866" }}></i>,
+  title: 'JavaScript (Intermediate)',
+  issuer: 'HackerRank',
+  year: '2026',
+  accentColor: '#2ec866',
+  bgColor: 'rgba(46,200,102,0.08)',
+  borderColor: 'rgba(46,200,102,0.16)',
+  category: 'Programming',
+  driveLink: 'https://drive.google.com/file/d/1e4MnQBnRbp7yCEDkK_KJVCRe9TS2OVeR/preview'
+},
+{
+  icon: <i className="fa-solid fa-laptop-code" style={{ color: "#7c4dff" }}></i>,
+  title: 'Software Engineer Intern',
+  issuer: 'HackerRank',
+  year: '2026',
+  accentColor: '#7c4dff',
+  bgColor: 'rgba(124,77,255,0.08)',
+  borderColor: 'rgba(124,77,255,0.16)',
+  category: 'Software Engineering',
+  driveLink: 'https://drive.google.com/file/d/1cQ3iGnN8ZL6dSh0ykuVrh7sCMMhidO8f/preview'
+},
+{
+  icon: <i className="fa-solid fa-building-columns" style={{ color: "#0f62fe" }}></i>,
+  title: 'Software Engineering Job Simulation',
+  issuer: 'JPMorgan Chase & Co. (Forage)',
+  year: '2026',
+  accentColor: '#0f62fe',
+  bgColor: 'rgba(15,98,254,0.08)',
+  borderColor: 'rgba(15,98,254,0.16)',
+  category: 'Job Simulation',
+  driveLink: 'https://drive.google.com/file/d/16kUl6O1D4ZYV3cqQRKBQjBDp6p7Tiaj0/preview'
+},
+  {
     icon: <i className="fa-solid fa-robot" style={{ color: "#7eb3f7" }}></i>,
     title: 'Agentic AI Practitioner',
     issuer: 'UIPath Academy',
