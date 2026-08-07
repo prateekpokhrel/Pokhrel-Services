@@ -60,19 +60,23 @@ const contactInfo = [
     bg: "var(--pdim)",
     color: "var(--p)"
   },
-  {
-    icon: <FaLinkedin size={18} />,
-    label: "LinkedIn",
-    value: "linkedin.com/in/pokhrelpratik",
-    href: "https://www.linkedin.com/in/pokhrelpratik/",
-    bg: "rgba(10,102,194,0.12)",
-    color: "#0A66C2"
-  },
+{
+  icon: <FaLinkedin size={18} />,
+  label: "LinkedIn",
+  value: "linkedin.com/in/pokhrelpratik",
+  href: "https://www.linkedin.com/in/pokhrelpratik/",
+  target: "_blank",
+  rel: "noopener noreferrer",
+  bg: "rgba(10,102,194,0.12)",
+  color: "var(--p)"
+},
   {
     icon: <FaGithub size={18} />,
     label: "GitHub",
     value: "github.com/prateekpokhrel",
     href: "https://github.com/prateekpokhrel",
+    target: "_blank",
+    rel: "noopener noreferrer",
     bg: "var(--surf)",
     color: "var(--t1)"
   },
