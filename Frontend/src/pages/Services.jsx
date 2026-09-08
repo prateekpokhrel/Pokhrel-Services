@@ -6,7 +6,7 @@ import emailjs from "@emailjs/browser";
 import suisImg      from '../assets/suis.png'
 import segaImg      from '../assets/sega.png'
 import myrecipesImg from '../assets/myrecipe.png'
-import kavoutImg    from '../assets/kavout.png'
+// import kavoutImg    from '../assets/kavout.png'
 import nagarsetuImg  from '../assets/nagarsetu.png'
 import dokoImg      from '../assets/doko.png'
 
@@ -101,17 +101,17 @@ const liveProjects = [
     url: 'https://my-recipes-pi.vercel.app/',
     color: '#4fc97f',
   },
-  {
-    id: 'kavout',
-    logo: kavoutImg,
-    title: 'Kavout',
-    subtitle: 'AI-Driven Investment Insights',
-    desc: 'Time-series forecasting platform for NSE stocks generating predictive insights for 1-day, 15-day, and 30-day horizons with a built-in paper trading engine for strategy simulation.',
-    tags: ['Python', 'TensorFlow', 'React.js', 'FastAPI'],
-    status: 'Live',
-    url: 'https://kavout-ltsf.vercel.app/',
-    color: '#f7d44f',
-  },
+  // {
+  //   id: 'kavout',
+  //   logo: kavoutImg,
+  //   title: 'Kavout',
+  //   subtitle: 'AI-Driven Investment Insights',
+  //   desc: 'Time-series forecasting platform for NSE stocks generating predictive insights for 1-day, 15-day, and 30-day horizons with a built-in paper trading engine for strategy simulation.',
+  //   tags: ['Python', 'TensorFlow', 'React.js', 'FastAPI'],
+  //   status: 'Live',
+  //   url: 'https://kavout-ltsf.vercel.app/',
+  //   color: '#f7d44f',
+  // },
   // {
   //   id: 'nagarsetu',
   //   logo: nagarsetuImg,
