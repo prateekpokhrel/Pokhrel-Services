@@ -53,7 +53,7 @@ const projects = [
     tags: ['React', 'Spring Boot', 'FastAPI', 'XGBoost', 'PostgreSQL', 'Docker'],
     status: 'Completed',
     year: '2025',
-    link: 'https://github.com/prateekpokhrel/DeliverAI-Guard'
+    link: 'https://dokoxpress.vercel.app/'
   },
   {
     num: '06',
