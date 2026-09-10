@@ -59,7 +59,7 @@ const socials = [
   { img: github,   label: 'GitHub',   href: 'https://github.com/prateekpokhrel' },
   { img: linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/pokhrelpratik/' },
   { img: emailImg, label: 'Email',    href: 'mailto:itspratikpok@email.com' },
-  { img: resume,   label: 'Resume',   href: 'https://drive.google.com/file/d/10ol7vDDbs-SS9X07O-WaRghbCdB1vu4C/view?usp=sharing' },
+  { img: resume,   label: 'Resume',   href: 'https://drive.google.com/file/d/1rTcs3BwpgHb4f0IPA_TxflzOnTE9BeUQ/view?usp=sharing' },
 ]
 
 const funFacts = [
