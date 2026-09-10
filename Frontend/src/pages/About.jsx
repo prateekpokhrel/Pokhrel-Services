@@ -5,7 +5,7 @@ import github  from '../assets/github.webp'
 import linkedin from '../assets/linkedin.png'
 import emailImg from '../assets/email.png'
 import resume  from '../assets/resume.png'
-import pp from '../assets/about.jpeg'
+import pp from '../assets/about.png'
 
 /* ─────────────────────────── DATA ─────────────────────────── */
 
